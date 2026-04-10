@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://novogrey.github.io/TRP-RP-RolePlay-Project/sitemap.xml
