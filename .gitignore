@@ -1,3 +1,5 @@
 .vscode/
 .github/
 website_dev/
+.gitignore
+site-moved.html
