@@ -65,6 +65,69 @@
     }
   };
 
+  const navigationTranslations = Object.freeze({
+    '← Назад': '← Back',
+    'Главная': 'Home',
+    'Команда проекта': 'Project Team',
+    'События и смены': 'Events and Shifts',
+    'Документация': 'Documentation',
+    'Устав проекта': 'Project Charter',
+    'ПДД': 'Traffic Rules',
+    'Для сотрудников': 'For Employees',
+    'Маршруты': 'Routes',
+    'Регламент радиообмена': 'Radio Communication Regulations',
+    'Инструкция ДТУ и ДТД': 'DTU and DTD Instructions',
+    'Инструкция ДКС и ДТД': 'DKS and DTD Instructions',
+    'Инструкция водителей': 'Driver Instructions',
+    'Для отделов': 'For Departments',
+    'Директор ГТОП/ТПОХ': 'Director GTOP/TPOH',
+    'КОУП': 'KOUP',
+    'ФАО': 'FAO',
+    'ОБД': 'OBD',
+    'УбЦ': 'UbTs',
+    'Лекции': 'Lectures',
+    'Запуск троллейбусов': 'Trolleybus Launch',
+    'Схемы депо и маршрутов': 'Depot and Route Schemes',
+    'Анкеты': 'Forms',
+    'Заявления': 'Applications',
+    'Экзамен': 'Exam',
+    'Отпуск & Больничный': 'Vacation & Sick Leave',
+    'Увольнение & Восстановление': 'Resignation & Reinstatement',
+    'Регистрация & Замена троллейбуса': 'Trolleybus Registration & Replacement',
+    'Ремонт троллейбусов': 'Trolleybus Repair',
+    'Персонал': 'Personnel',
+    'ЗНГТУ': 'ZNGTU',
+    'ДТПГО & ДТПоХ': 'DTPGO & DTPoH',
+    'ДТУ': 'DTU',
+    'ДКС': 'DKS',
+    'Тесты': 'Tests',
+    'Теоретический экзамен': 'Theoretical Exam',
+    'Подать апелляцию': 'Submit Appeal',
+    'Регистрация на смену': 'Shift Registration',
+    'Прочие анкеты': 'Other Forms',
+    'Прочее': 'Other',
+    'Редакторы и генераторы': 'Editors and Generators',
+    'Генератор спавна машин': 'Vehicle Spawn Generator',
+    'Логические схемы': 'Logical Circuits',
+    'Создание окрасок': 'Create Liveries',
+    'Редактор маршрутов': 'Route Editor',
+    'Информатор': 'Informer',
+    'Расписание': 'Schedule',
+    'Трибуна TDW': 'TDW Tribune',
+    'Конфигуратор опубликованной карты': 'Published Map Configurator',
+    'Правила проекта "TRP RP"': 'TRP RP Project Rules',
+    'ЧАВО - Частые вопросы': 'FAQ - Frequently Asked Questions',
+    'Официальная документация': 'Official Documentation',
+    'Обновления сайта': 'Website Updates',
+    'База данных': 'Database',
+    'Список автотранспорта': 'Vehicle List',
+    'Команды': 'Commands',
+    'Идентификатор работника': 'Employee ID',
+    'Административный сайт': 'Admin Site',
+    'Статус сервисов': 'Service Status',
+    'Социальные сети': 'Social Media'
+  });
+
   const demos = [
     {
       command: '/vehiclespawn', file: 'vehicle_spawn.json',
@@ -142,6 +205,40 @@
     return translations[language][key] || translations.ru[key] || key;
   }
 
+  function directNavigationText(element) {
+    return Array.from(element.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function initializeNavigationTranslations() {
+    const englishToRussian = Object.fromEntries(
+      Object.entries(navigationTranslations).map(([russian, english]) => [english, russian])
+    );
+    document.querySelectorAll('.menu-back-btn, .nav-link, .dropdown-toggle, .dropdown-link').forEach((element) => {
+      if (element.closest('#trp-install-menu')) return;
+      const currentLabel = directNavigationText(element);
+      const russianLabel = Object.prototype.hasOwnProperty.call(navigationTranslations, currentLabel)
+        ? currentLabel
+        : englishToRussian[currentLabel];
+      if (russianLabel) element.dataset.addedNavLabel = russianLabel;
+    });
+  }
+
+  function syncNavigationTranslations() {
+    document.querySelectorAll('[data-added-nav-label]').forEach((element) => {
+      const russianLabel = element.dataset.addedNavLabel;
+      const nextLabel = language === 'en' ? navigationTranslations[russianLabel] : russianLabel;
+      const textNode = Array.from(element.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+      );
+      if (textNode) textNode.textContent = `${nextLabel}${element.children.length ? ' ' : ''}`;
+    });
+  }
+
   function applyLanguage(nextLanguage, persist) {
     language = nextLanguage === 'en' ? 'en' : 'ru';
     document.documentElement.lang = language;
@@ -156,6 +253,7 @@
     if (langButton) langButton.textContent = language === 'ru' ? 'EN' : 'RU';
     const menuToggle = document.getElementById('menu-toggle');
     if (menuToggle) menuToggle.setAttribute('aria-label', text('menuOpen'));
+    syncNavigationTranslations();
     syncThemeButton();
     syncInstallationStatus();
     renderDemo(currentDemo, false);
@@ -340,6 +438,7 @@
   function boot() {
     const settingsLink = document.getElementById('trp-settings-link');
     if (settingsLink) settingsLink.href = '../settings/';
+    initializeNavigationTranslations();
     applyTheme(getSavedTheme(), false);
     applyLanguage(language, false);
     syncDemoControl();

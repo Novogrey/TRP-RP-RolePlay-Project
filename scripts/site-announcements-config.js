@@ -1,4 +1,33 @@
 window.TRP_SITE_ANNOUNCEMENTS = [
+  {
+    id: "trp-rp-systems-installation",
+    version: 2,
+    enabled: true,
+    type: "info",
+    paths: "all",
+    collapsible: true,
+    startCollapsed: false,
+    startsAtUtc: "",
+    endsAtUtc: "2026-08-14 23:59",
+    title: {
+      ru: "TRP RP Systems теперь можно добавить в Discord",
+      en: "TRP RP Systems can now be added to Discord",
+    },
+    body: {
+      ru: "<p>На сайте опубликована страница установки TRP RP Systems. Приложение можно добавить на сервер Discord или в личный аккаунт.</p><p>После установки будут доступны шесть редакторов TRP RP и команда <strong>/help</strong>. В навигационном меню добавлена ссылка <strong>«Добавить бота»</strong>.</p>",
+      en: "<p>The TRP RP Systems installation page is now available. The app can be added to a Discord server or installed to a personal account.</p><p>After installation, the six TRP RP editors and the <strong>/help</strong> command will be available. An <strong>“Add bot”</strong> link has been added to the navigation menu.</p>",
+    },
+    actions: [
+      {
+        href: "https://novogrey.github.io/TRP-RP-RolePlay-Project/added/",
+        style: "primary",
+        label: {
+          ru: "Открыть страницу установки",
+          en: "Open installation page",
+        },
+      },
+    ],
+  },
   // UTC window for any announcement:
   // startsAtUtc: "",
   // endsAtUtc: "",
