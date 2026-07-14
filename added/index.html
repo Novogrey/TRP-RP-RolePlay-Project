@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Добавить TRP RP Systems</title>
+  <meta name="description" content="Добавьте TRP RP Systems на сервер Discord или в свой аккаунт и используйте редакторы конфигураций TRP RP.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#17191d">
+  <link rel="canonical" href="https://novogrey.github.io/TRP-RP-RolePlay-Project/added/">
+  <link rel="icon" href="../images/image.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="../images/avatar.webp">
+  <meta property="og:title" content="Добавить TRP RP Systems">
+  <meta property="og:description" content="Редакторы TRP RP прямо в Discord: на сервере или в личном аккаунте.">
+  <meta property="og:url" content="https://novogrey.github.io/TRP-RP-RolePlay-Project/added/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="TRP RP">
+  <meta property="og:image" content="https://novogrey.github.io/TRP-RP-RolePlay-Project/images/background.webp">
+  <meta property="og:image:alt" content="TRP RP">
+  <link rel="stylesheet" href="../css/shared-menu.css?v=20260426a">
+  <link rel="stylesheet" href="../css/added-styles.css?v=20260714a">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="logo-section">
+        <img src="../images/avatar.webp" alt="TRP RP" class="navbar-avatar">
+        <a href="../" class="logo">TRP RP</a>
+      </div>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Открыть меню">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu" id="nav-menu">
+        <li class="menu-back-item"><button class="menu-back-btn" id="menu-back-btn" data-i18n="back">← Назад</button></li>
+        <li class="nav-item"><a href="../" class="nav-link" data-i18n="navHome">Главная</a></li>
+        <li class="nav-item"><a href="../team/" class="nav-link" data-i18n="navTeam">Команда проекта</a></li>
+        <li class="nav-item"><a href="../events/" class="nav-link" data-i18n="navEvents">События и смены</a></li>
+        <li class="nav-item has-dropdown">
+          <button class="dropdown-toggle"><span data-i18n="navEditors">Редакторы</span> <span class="dropdown-arrow">▾</span></button>
+          <ul class="dropdown-menu">
+            <li><a href="../other/editors_and_generators/vehicle_spawn_generator/" class="dropdown-link" data-i18n="commandVehicle">Генератор транспорта</a></li>
+            <li><a href="../other/editors_and_generators/livery_creating_generator/" class="dropdown-link" data-i18n="commandLivery">Редактор окрасок</a></li>
+            <li><a href="../other/editors_and_generators/route_editor/" class="dropdown-link" data-i18n="commandRoute">Редактор маршрутов</a></li>
+            <li><a href="../other/editors_and_generators/announcement/" class="dropdown-link" data-i18n="commandAnnouncement">Редактор информатора</a></li>
+            <li><a href="../other/editors_and_generators/tdw_stage_generator/" class="dropdown-link" data-i18n="commandTdw">Генератор сцены TDW</a></li>
+            <li><a href="../other/editors_and_generators/map_configurator/" class="dropdown-link" data-i18n="commandMap">Конфигуратор карты</a></li>
+          </ul>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button class="dropdown-toggle"><span data-i18n="navSocial">Социальные сети</span> <span class="dropdown-arrow">▾</span></button>
+          <ul class="dropdown-menu">
+            <li><a href="https://discord.gg/gbjxtVF6bA" target="_blank" rel="noopener noreferrer" class="dropdown-link">Discord</a></li>
+            <li><a href="https://www.youtube.com/@TRPRPOfficial" target="_blank" rel="noopener noreferrer" class="dropdown-link">YouTube</a></li>
+            <li><a href="https://www.tiktok.com/@trprpofficial" target="_blank" rel="noopener noreferrer" class="dropdown-link">TikTok</a></li>
+          </ul>
+        </li>
+        <li class="language-selector"><button id="lang-btn" class="lang-btn" type="button">EN</button></li>
+        <li class="theme-selector"><button id="theme-btn" class="theme-btn" type="button" aria-label="Тёмная тема">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section class="install-hero" id="install">
+      <div class="install-hero-overlay"></div>
+      <div class="install-hero-content">
+        <div class="product-mark" aria-hidden="true">
+          <img src="../images/avatar.webp" alt="">
+        </div>
+        <p class="hero-kicker">TRP RP SYSTEMS</p>
+        <h1 id="hero-title" data-i18n="heroTitle">Добавьте редакторы TRP RP в Discord</h1>
+        <p id="hero-copy" class="hero-copy" data-i18n="heroCopy">Создавайте и изменяйте конфигурации транспорта, окрасок, маршрутов, информаторов, сцен TDW и карт прямо через команды Discord.</p>
+
+        <div class="install-options" aria-label="Способ установки">
+          <a class="install-option" data-target="server" href="https://discord.com/oauth2/authorize?client_id=1055811401983197184&amp;permissions=35840&amp;response_type=code&amp;redirect_uri=https%3A%2F%2Fnovogrey.github.io%2FTRP-RP-RolePlay-Project%2Fadded%2F&amp;integration_type=0&amp;scope=bot%20applications.commands&amp;state=server">
+            <span class="install-option-icon" aria-hidden="true">#</span>
+            <span>
+              <strong data-i18n="serverTitle">Добавить на сервер</strong>
+              <small data-i18n="serverHint">Редакторы доступны участникам сервера</small>
+            </span>
+          </a>
+          <a class="install-option" data-target="account" href="https://discord.com/oauth2/authorize?client_id=1055811401983197184&amp;response_type=code&amp;redirect_uri=https%3A%2F%2Fnovogrey.github.io%2FTRP-RP-RolePlay-Project%2Fadded%2F&amp;integration_type=1&amp;scope=applications.commands&amp;state=account">
+            <span class="install-option-icon" aria-hidden="true">@</span>
+            <span>
+              <strong data-i18n="accountTitle">Добавить на аккаунт</strong>
+              <small data-i18n="accountHint">Редакторы доступны лично вам</small>
+            </span>
+          </a>
+        </div>
+
+        <div class="redirect-status" id="redirect-status" aria-live="polite">
+          <div class="redirect-status-copy">
+            <span class="status-indicator" id="status-indicator" aria-hidden="true"></span>
+            <div>
+              <strong id="redirect-title" data-i18n="chooseTitle">Выберите способ установки</strong>
+              <p id="redirect-description" data-i18n="chooseDescription">Discord откроет безопасное окно подтверждения с необходимыми разрешениями.</p>
+            </div>
+          </div>
+          <div class="redirect-actions">
+            <a id="continue-link" class="action-button action-button-primary is-hidden" href="#" data-i18n="installAgain">Установить повторно</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="command-section reveal-section" id="commands">
+      <div class="section-shell">
+        <div class="section-heading command-heading">
+          <p class="section-kicker" data-i18n="commandsKicker">КОМАНДЫ</p>
+          <h2 data-i18n="commandsTitle">Шесть редакторов в одном приложении</h2>
+          <p data-i18n="commandsCopy">Каждая команда открывает полноценную интерактивную панель и формирует файл для соответствующей системы TRP RP.</p>
+        </div>
+
+        <div class="command-layout">
+          <div class="command-list" id="command-list">
+            <button class="command-list-item is-active" type="button" data-command-index="0">
+              <code>/vehiclespawn</code><span data-i18n="commandVehicle">Генератор транспорта</span>
+            </button>
+            <button class="command-list-item" type="button" data-command-index="1">
+              <code>/livery-editor</code><span data-i18n="commandLivery">Редактор окрасок</span>
+            </button>
+            <button class="command-list-item" type="button" data-command-index="2">
+              <code>/route-editor</code><span data-i18n="commandRoute">Редактор маршрутов</span>
+            </button>
+            <button class="command-list-item" type="button" data-command-index="3">
+              <code>/announcement-editor</code><span data-i18n="commandAnnouncement">Редактор информатора</span>
+            </button>
+            <button class="command-list-item" type="button" data-command-index="4">
+              <code>/tdw-stage-editor</code><span data-i18n="commandTdw">Генератор сцены TDW</span>
+            </button>
+            <button class="command-list-item" type="button" data-command-index="5">
+              <code>/map-configurator</code><span data-i18n="commandMap">Конфигуратор карты</span>
+            </button>
+          </div>
+
+          <div class="discord-demo" id="discord-demo" aria-live="polite">
+            <div class="demo-header">
+              <div class="demo-app">
+                <img src="../images/avatar.webp" alt="TRP RP Systems">
+                <span><strong>TRP RP Systems</strong><small>APP</small></span>
+              </div>
+              <button class="demo-control" id="demo-control" type="button" aria-label="Приостановить анимацию" title="Приостановить анимацию">Ⅱ</button>
+            </div>
+            <div class="demo-command-line"><span>Novogrey</span><code id="demo-command">/vehiclespawn</code><i class="typing-caret" aria-hidden="true"></i></div>
+            <div class="demo-response">
+              <div class="demo-accent"></div>
+              <div class="demo-response-body">
+                <strong id="demo-title">Vehicle Spawn Generator</strong>
+                <p id="demo-description">Настройте модель, бортовой номер, окраску, флаги и оснащение.</p>
+                <div class="demo-fields" id="demo-fields"></div>
+                <div class="demo-result">
+                  <span id="demo-result-label">Файл подготовлен</span>
+                  <code id="demo-file">vehicle_spawn.json</code>
+                </div>
+              </div>
+            </div>
+            <div class="demo-progress" aria-hidden="true"><span id="demo-progress-bar"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-action-section reveal-section">
+      <div class="section-shell final-action-content">
+        <div>
+          <p class="section-kicker" data-i18n="finalKicker">TRP RP SYSTEMS</p>
+          <h2 data-i18n="finalTitle">Выберите подходящий способ установки</h2>
+        </div>
+        <div class="final-actions">
+          <a class="action-button action-button-primary" href="https://discord.com/oauth2/authorize?client_id=1055811401983197184&amp;permissions=35840&amp;response_type=code&amp;redirect_uri=https%3A%2F%2Fnovogrey.github.io%2FTRP-RP-RolePlay-Project%2Fadded%2F&amp;integration_type=0&amp;scope=bot%20applications.commands&amp;state=server" data-i18n="serverTitle">Добавить на сервер</a>
+          <a class="action-button action-button-light" href="https://discord.com/oauth2/authorize?client_id=1055811401983197184&amp;response_type=code&amp;redirect_uri=https%3A%2F%2Fnovogrey.github.io%2FTRP-RP-RolePlay-Project%2Fadded%2F&amp;integration_type=1&amp;scope=applications.commands&amp;state=account" data-i18n="accountTitle">Добавить на аккаунт</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="section-shell footer-content">
+      <p data-i18n="footerText">© 2026 TRP RP. Все права защищены.</p>
+      <a href="../other/official_documentation/#privacy" data-i18n="privacy">Политика конфиденциальности</a>
+    </div>
+  </footer>
+
+  <script src="../scripts/install-navigation.js?v=20260714a"></script>
+  <script src="../scripts/shared-menu.js?v=20260428b"></script>
+  <script src="../scripts/added-page.js?v=20260714a"></script>
+</body>
+</html>
