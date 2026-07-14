@@ -13,6 +13,9 @@
   --page-orange: #ff5d00;
   --page-blue: #5865f2;
   --page-green: #238a57;
+  --secondary-color: #e8e8e8;
+  --navbar-bg: #1a1a1a;
+  --border-color: #c0bdb8;
 }
 
 body.dark-mode {
@@ -24,6 +27,7 @@ body.dark-mode {
   --page-border: #363b43;
   --page-dark: #111317;
   --page-green: #4bc184;
+  --border-color: #333333;
 }
 
 html {
@@ -571,25 +575,15 @@ body.dark-mode .install-hero {
 }
 
 .footer {
-  padding: 24px 0;
-  color: rgba(255, 255, 255, 0.7);
-  background: #0d0f12;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.footer-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  padding: 2rem 0;
+  color: var(--secondary-color);
+  background-color: var(--navbar-bg);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
 }
 
 .footer p {
   margin: 0;
-}
-
-.footer a {
-  color: rgba(255, 255, 255, 0.78);
 }
 
 .reveal-section {
@@ -691,11 +685,6 @@ body.dark-mode .install-hero {
 
   .redirect-actions,
   .final-actions,
-  .footer-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
   .redirect-actions .action-button,
   .final-actions .action-button {
     width: 100%;
