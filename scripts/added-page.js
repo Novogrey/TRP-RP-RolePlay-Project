@@ -23,7 +23,11 @@
       commandsKicker: 'КОМАНДЫ', commandsTitle: 'Шесть редакторов в одном приложении',
       commandsCopy: 'Каждая команда открывает полноценную интерактивную панель и формирует файл для соответствующей системы TRP RP.',
       finalKicker: 'TRP RP SYSTEMS', finalTitle: 'Выберите подходящий способ установки',
-      footerText: '© 2026 TRP RP. Все права защищены.', privacy: 'Политика конфиденциальности',
+      contactsTitle: 'Контакты проекта "TRP RP"', vkLabel: 'ВКонтакте',
+      legalTitle: 'Юридическая документация проекта "TRP RP"',
+      privacyPolicy: 'Политика конфиденциальности', termsOfUse: 'Пользовательское соглашение',
+      projectDisclaimer: 'Проект "TRP RP" не является юридическим лицом и не предоставляет никаких услуг!',
+      footerText: '© 2026 TRP RP. Все права защищены.',
       menuOpen: 'Открыть меню', darkTheme: 'Включить тёмную тему', lightTheme: 'Включить светлую тему',
       pauseAnimation: 'Приостановить анимацию', resumeAnimation: 'Продолжить анимацию',
       serverInstalledHero: 'TRP RP Systems добавлен на сервер',
@@ -50,7 +54,11 @@
       commandsKicker: 'COMMANDS', commandsTitle: 'Six editors in one app',
       commandsCopy: 'Each command opens a complete interactive panel and creates a file for the corresponding TRP RP system.',
       finalKicker: 'TRP RP SYSTEMS', finalTitle: 'Choose the installation method that fits your use',
-      footerText: '© 2026 TRP RP. All rights reserved.', privacy: 'Privacy policy',
+      contactsTitle: 'TRP RP Project Contacts', vkLabel: 'VKontakte',
+      legalTitle: 'Legal Documentation of the TRP RP Project',
+      privacyPolicy: 'Privacy Policy', termsOfUse: 'Terms of Use',
+      projectDisclaimer: 'The "TRP RP" project is not a legal entity and does not provide any services!',
+      footerText: '© 2026 TRP RP. All rights reserved.',
       menuOpen: 'Open menu', darkTheme: 'Enable dark theme', lightTheme: 'Enable light theme',
       pauseAnimation: 'Pause animation', resumeAnimation: 'Resume animation',
       serverInstalledHero: 'TRP RP Systems was added to the server',
@@ -239,6 +247,10 @@
     document.querySelectorAll('[data-i18n]').forEach((element) => {
       const value = text(element.dataset.i18n);
       if (value) element.textContent = value;
+    });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+      const value = text(element.dataset.i18nAriaLabel);
+      if (value) element.setAttribute('aria-label', value);
     });
     const langButton = document.getElementById('lang-btn');
     if (langButton) langButton.textContent = language === 'ru' ? 'EN' : 'RU';
