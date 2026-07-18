@@ -2,10 +2,9 @@
   'use strict';
 
   const APPLICATION_ID = '1055811401983197184';
-  const CALLBACK_URL = encodeURIComponent('https://novogrey.github.io/TRP-RP-RolePlay-Project/added/');
   const AUTH_URLS = {
-    server: `https://discord.com/oauth2/authorize?client_id=${APPLICATION_ID}&permissions=35840&response_type=code&redirect_uri=${CALLBACK_URL}&integration_type=0&scope=bot%20applications.commands&state=server`,
-    account: `https://discord.com/oauth2/authorize?client_id=${APPLICATION_ID}&response_type=code&redirect_uri=${CALLBACK_URL}&integration_type=1&scope=applications.commands&state=account`
+    server: `https://discord.com/oauth2/authorize?client_id=${APPLICATION_ID}&permissions=35840&integration_type=0&scope=bot%20applications.commands`,
+    account: `https://discord.com/oauth2/authorize?client_id=${APPLICATION_ID}&integration_type=1&scope=applications.commands`
   };
 
   const translations = {
@@ -161,23 +160,15 @@
     }
   ];
 
-  const params = new URLSearchParams(window.location.search);
-  const stateTarget = Object.prototype.hasOwnProperty.call(AUTH_URLS, params.get('state')) ? params.get('state') : null;
-  const savedTarget = Object.prototype.hasOwnProperty.call(AUTH_URLS, params.get('installed')) ? params.get('installed') : null;
-  const target = stateTarget || savedTarget;
-  const installationCompleted = Boolean((params.get('code') && stateTarget) || savedTarget);
-  const installationCanceled = params.get('error') === 'access_denied';
+  const target = null;
+  const installationCompleted = false;
+  const installationCanceled = false;
   let language = getSavedLanguage();
   let currentDemo = 0;
   let demoTimer = null;
   let typingTimer = null;
   let demoStarted = false;
   let demoPaused = prefersReducedMotion();
-
-  if (params.get('code') && stateTarget) {
-    const cleanUrl = `${window.location.pathname}?installed=${stateTarget}${window.location.hash}`;
-    window.history.replaceState({}, document.title, cleanUrl);
-  }
 
   function getSavedLanguage() {
     try {
@@ -443,6 +434,14 @@
     applyLanguage(language, false);
     syncDemoControl();
     initializeObservers();
+
+    document.querySelectorAll('[data-target]').forEach((link) => {
+      const installUrl = AUTH_URLS[link.dataset.target];
+      if (!installUrl || link.tagName !== 'A') return;
+      link.href = installUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    });
 
     document.getElementById('lang-btn')?.addEventListener('click', () => {
       applyLanguage(language === 'ru' ? 'en' : 'ru', true);
