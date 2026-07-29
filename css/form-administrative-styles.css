@@ -1,0 +1,76 @@
+.conditional-fields textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.conditional-fields input[type="text"] {
+  min-height: 46px;
+}
+
+.segmented-options {
+  align-items: stretch;
+}
+
+.segment-option > span {
+  height: 100%;
+}
+
+.vacation-type-reference {
+  min-width: 0;
+}
+
+.vacation-type-reference h3 {
+  margin: 0 0 8px;
+  color: var(--heading-color);
+  font-size: 0.94rem;
+  line-height: 1.35;
+}
+
+.vacation-type-descriptions {
+  border-top: 1px solid var(--border-color);
+}
+
+.vacation-type-description {
+  min-width: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-left: 3px solid transparent;
+  padding: 12px 13px;
+  color: var(--text-color);
+  background: transparent;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.vacation-type-description strong,
+.vacation-type-description p {
+  overflow-wrap: anywhere;
+}
+
+.vacation-type-description strong {
+  display: block;
+  color: var(--heading-color);
+  font-size: 0.9rem;
+}
+
+.vacation-type-description p {
+  margin: 4px 0 0;
+  color: var(--text-light);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.vacation-type-description.is-selected {
+  border-left-color: var(--form-accent);
+  background: rgba(74, 144, 226, 0.08);
+}
+
+@media (max-width: 720px) {
+  .conditional-fields textarea {
+    min-height: 130px;
+  }
+
+  .vacation-type-description {
+    padding: 11px 10px;
+  }
+}
