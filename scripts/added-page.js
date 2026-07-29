@@ -97,7 +97,7 @@
     'Схемы депо и маршрутов': 'Depot and Route Schemes',
     'Анкеты': 'Forms',
     'Заявления': 'Applications',
-    'Экзамен': 'Exam',
+    "Экзамен и обучение": 'Exam and Training',
     'Отпуск & Больничный': 'Vacation & Sick Leave',
     'Увольнение & Восстановление': 'Resignation & Reinstatement',
     'Регистрация & Замена троллейбуса': 'Trolleybus Registration & Replacement',
