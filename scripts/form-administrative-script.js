@@ -403,6 +403,22 @@ function initAdministrativeApplicationForm() {
   setConditionalFieldState(byId("vacation-fields"), false);
   setConditionalFieldState(byId("early-return-fields"), false);
   byId("lookup-profile").addEventListener("click", lookupProfile);
+  const identifierInput = byId("worker-identifier");
+  const identifierToggle = byId("toggle-worker-identifier");
+  const updateIdentifierVisibility = (visible) => {
+    identifierInput.type = visible ? "text" : "password";
+    identifierToggle.setAttribute("aria-pressed", String(visible));
+    const label = lang() === "en"
+      ? (visible ? "Hide identifier" : "Show identifier")
+      : (visible ? "Скрыть идентификатор" : "Показать идентификатор");
+    identifierToggle.setAttribute("aria-label", label);
+    identifierToggle.title = label;
+  };
+  identifierToggle.addEventListener("click", () => {
+    updateIdentifierVisibility(identifierInput.type === "password");
+    identifierInput.focus();
+  });
+  updateIdentifierVisibility(false);
   byId("worker-identifier").addEventListener("input", (event) => {
     event.target.value = event.target.value.toUpperCase().replace(/\s+/g, "");
     state.profile = null;
