@@ -6,14 +6,17 @@ const administrativeFormTranslations = {
     "Решение только в Discord": "Решение только в Discord",
     "Административный отдел": "Административный отдел",
     "Проверка аккаунта": "Проверка аккаунта",
-    "Discord и Roblox": "Discord и Roblox",
+    "Discord и Roblox": "Идентификатор и Roblox",
     "Параметры заявления": "Параметры заявления",
     "Отпуск или досрочный выход": "Отпуск или досрочный выход",
     "Рассмотрение": "Рассмотрение",
     "Решение Административного отдела": "Решение Административного отдела",
-    "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.":
-      "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.",
-    "ID аккаунта Discord": "ID аккаунта Discord",
+    "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.":
+      "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.",
+    "Идентификатор работника": "Идентификатор работника",
+    "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.":
+      "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.",
+    "Получить идентификатор работника": "Получить идентификатор работника",
     "Проверить данные": "Проверить данные",
     "Выберите заявление и заполните относящиеся к нему поля.":
       "Выберите заявление и заполните относящиеся к нему поля.",
@@ -32,14 +35,17 @@ const administrativeFormTranslations = {
     "Решение только в Discord": "Decision only in Discord",
     "Административный отдел": "Administrative Department",
     "Проверка аккаунта": "Account verification",
-    "Discord и Roblox": "Discord and Roblox",
+    "Discord и Roblox": "Identifier and Roblox",
     "Параметры заявления": "Application details",
     "Отпуск или досрочный выход": "Vacation or early return",
     "Рассмотрение": "Review",
     "Решение Административного отдела": "Administrative Department decision",
-    "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.":
-      "Enter the Discord account ID linked to Roblox on the project server.",
-    "ID аккаунта Discord": "Discord account ID",
+    "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.":
+      "Enter the personal employee identifier issued by the TRP RP Systems bot.",
+    "Идентификатор работника": "Employee identifier",
+    "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.":
+      "Enter your Discord ID on the identifier page, confirm the request in the bot's direct messages, then use the issued code here.",
+    "Получить идентификатор работника": "Get employee identifier",
     "Проверить данные": "Check details",
     "Выберите заявление и заполните относящиеся к нему поля.":
       "Choose an application and complete the relevant fields.",
@@ -61,8 +67,8 @@ if (typeof translations !== "undefined") {
 const administrativePageCopy = {
   ru: {
     apiMissing: "Форма ещё не подключена к API заявлений.",
-    invalidId: "Укажите корректный ID аккаунта Discord.",
-    loading: "Проверяем верификацию и данные аккаунта...",
+    invalidIdentifier: "Укажите корректный идентификатор работника.",
+    loading: "Проверяем идентификатор, верификацию и участие в Roblox-группе...",
     profileReady: "Данные подтверждены. Заполните параметры заявления.",
     loadFailed: "Не удалось проверить данные. Повторите попытку позднее.",
     discord: "Аккаунт Discord",
@@ -78,8 +84,8 @@ const administrativePageCopy = {
   },
   en: {
     apiMissing: "The form is not connected to the application API.",
-    invalidId: "Enter a valid Discord account ID.",
-    loading: "Checking verification and account details...",
+    invalidIdentifier: "Enter a valid employee identifier.",
+    loading: "Checking the identifier, verification and Roblox group membership...",
     profileReady: "Account details confirmed. Complete the application.",
     loadFailed: "Account details could not be checked. Try again later.",
     discord: "Discord account",
@@ -285,9 +291,9 @@ function initAdministrativeApplicationForm() {
   }
 
   async function lookupProfile() {
-    const discordId = byId("discord-id").value.trim();
-    if (!/^\d{15,22}$/.test(discordId)) {
-      showStatus(copy("invalidId"), "error");
+    const workerIdentifier = byId("worker-identifier").value.trim().toUpperCase();
+    if (!/^(?:\d{4}|TRP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})$/.test(workerIdentifier)) {
+      showStatus(copy("invalidIdentifier"), "error");
       return;
     }
     if (!apiBase || apiBase.startsWith("PASTE_")) {
@@ -306,7 +312,7 @@ function initAdministrativeApplicationForm() {
         fetch(
           endpoint({
             action: "administrative-profile",
-            discordId,
+            workerIdentifier,
             language: lang(),
             _: Date.now()
           }),
@@ -347,7 +353,7 @@ function initAdministrativeApplicationForm() {
     }
     const payload = {
       system: "administrative",
-      discordId: byId("discord-id").value.trim(),
+      workerIdentifier: byId("worker-identifier").value.trim().toUpperCase(),
       language: lang(),
       applicationType: state.applicationType
     };
@@ -397,7 +403,8 @@ function initAdministrativeApplicationForm() {
   setConditionalFieldState(byId("vacation-fields"), false);
   setConditionalFieldState(byId("early-return-fields"), false);
   byId("lookup-profile").addEventListener("click", lookupProfile);
-  byId("discord-id").addEventListener("input", () => {
+  byId("worker-identifier").addEventListener("input", (event) => {
+    event.target.value = event.target.value.toUpperCase().replace(/\s+/g, "");
     state.profile = null;
     state.config = null;
     state.applicationType = null;
