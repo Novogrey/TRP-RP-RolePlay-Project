@@ -1089,7 +1089,7 @@ function initTrainingApplicationForm() {
 
   async function lookupProfile() {
     const workerIdentifier = byId("worker-identifier").value.trim().toUpperCase();
-    if (!/^(?:\d{4}|TRP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})$/.test(workerIdentifier)) {
+    if (!/^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(workerIdentifier)) {
       showStatus(copy("invalidIdentifier"), "error");
       return;
     }
