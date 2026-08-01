@@ -204,14 +204,16 @@ Object.assign(translations.ru, {
   "Проверка до 3 дней": "Проверка до 3 дней",
   "Решение только в Discord": "Решение только в Discord",
   "Учебный центр": "Учебный центр",
-  "Discord и Roblox": "Discord и Roblox",
+  "Discord и Roblox": "Идентификатор и Roblox",
   "Экзамен или обучение": "Экзамен или обучение",
   "Рассмотрение": "Рассмотрение",
   "Решение Учебного центра": "Решение Учебного центра",
   "Подайте заявление на приватный экзамен или углублённое обучение. Данные Roblox, должность и доступные варианты будут определены автоматически после проверки аккаунта Discord.": "Подайте заявление на приватный экзамен или углублённое обучение. Данные Roblox, должность и доступные варианты будут определены автоматически после проверки аккаунта Discord.",
   "Проверка аккаунта": "Проверка аккаунта",
-  "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.": "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.",
-  "ID аккаунта Discord": "ID аккаунта Discord",
+  "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.": "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.",
+  "Идентификатор работника": "Идентификатор работника",
+  "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.": "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.",
+  "Получить идентификатор работника": "Получить идентификатор работника",
   "Проверить данные": "Проверить данные",
   "Параметры заявления": "Параметры заявления",
   "Выберите формат и заполните доступные для него поля.": "Выберите формат и заполните доступные для него поля.",
@@ -229,14 +231,16 @@ Object.assign(translations.en, {
   "Проверка до 3 дней": "Review within 3 days",
   "Решение только в Discord": "Decision only in Discord",
   "Учебный центр": "Training Center",
-  "Discord и Roblox": "Discord and Roblox",
+  "Discord и Roblox": "Identifier and Roblox",
   "Экзамен или обучение": "Exam or training",
   "Рассмотрение": "Review",
   "Решение Учебного центра": "Training Center decision",
   "Подайте заявление на приватный экзамен или углублённое обучение. Данные Roblox, должность и доступные варианты будут определены автоматически после проверки аккаунта Discord.": "Apply for a private exam or in-depth training. Roblox details, position and available options are determined automatically after your Discord account is checked.",
   "Проверка аккаунта": "Account verification",
-  "Укажите ID аккаунта Discord, который привязан к Roblox на сервере проекта.": "Enter the Discord account ID linked to Roblox on the project server.",
-  "ID аккаунта Discord": "Discord account ID",
+  "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.": "Enter the personal employee identifier issued by the TRP RP Systems bot.",
+  "Идентификатор работника": "Employee identifier",
+  "Введите свой Discord ID на странице получения, подтвердите запрос в личных сообщениях бота и используйте выданный код здесь.": "Enter your Discord ID on the identifier page, confirm the request in the bot's direct messages, then use the issued code here.",
+  "Получить идентификатор работника": "Get employee identifier",
   "Проверить данные": "Check details",
   "Параметры заявления": "Application details",
   "Выберите формат и заполните доступные для него поля.": "Choose a format and complete the available fields.",
@@ -703,9 +707,9 @@ function initDropdowns() {
 
 const applicationPageCopy = {
   ru: {
-    apiMissing: "Форма ещё не подключена к Google Apps Script. Укажите URL развёртывания в training-applications-config.js.",
-    invalidId: "Укажите корректный ID аккаунта Discord.",
-    loading: "Проверяем верификацию и данные аккаунта...",
+    apiMissing: "Форма ещё не подключена к API заявлений.",
+    invalidIdentifier: "Укажите корректный идентификатор работника.",
+    loading: "Проверяем идентификатор, верификацию и участие в Roblox-группе...",
     profileReady: "Данные подтверждены. Заполните параметры заявления.",
     loadFailed: "Не удалось проверить данные. Повторите попытку позднее.",
     discord: "Аккаунт Discord",
@@ -725,9 +729,9 @@ const applicationPageCopy = {
     noneExclusive: "Вариант «Отсутствует» нельзя выбирать вместе с другими вариантами."
   },
   en: {
-    apiMissing: "The form is not connected to Google Apps Script yet. Set the deployment URL in training-applications-config.js.",
-    invalidId: "Enter a valid Discord account ID.",
-    loading: "Checking verification and account details...",
+    apiMissing: "The form is not connected to the application API.",
+    invalidIdentifier: "Enter a valid employee identifier.",
+    loading: "Checking the identifier, verification and Roblox group membership...",
     profileReady: "Account details confirmed. Complete the application.",
     loadFailed: "Account details could not be checked. Try again later.",
     discord: "Discord account",
@@ -1084,9 +1088,9 @@ function initTrainingApplicationForm() {
   }
 
   async function lookupProfile() {
-    const discordId = byId("discord-id").value.trim();
-    if (!/^\d{15,22}$/.test(discordId)) {
-      showStatus(copy("invalidId"), "error");
+    const workerIdentifier = byId("worker-identifier").value.trim().toUpperCase();
+    if (!/^(?:\d{4}|TRP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})$/.test(workerIdentifier)) {
+      showStatus(copy("invalidIdentifier"), "error");
       return;
     }
     if (!apiBase || apiBase.startsWith("PASTE_")) {
@@ -1103,7 +1107,7 @@ function initTrainingApplicationForm() {
           { cache: "no-store" }
         ).then(readResponse),
         fetch(
-          endpoint({ action: "profile", discordId, language: lang(), _: Date.now() }),
+          endpoint({ action: "profile", workerIdentifier, language: lang(), _: Date.now() }),
           { cache: "no-store" }
         ).then(readResponse)
       ]);
@@ -1134,7 +1138,7 @@ function initTrainingApplicationForm() {
       return;
     }
     const payload = {
-      discordId: byId("discord-id").value.trim(),
+      workerIdentifier: byId("worker-identifier").value.trim().toUpperCase(),
       language: lang(),
       applicationType: state.applicationType
     };
@@ -1176,7 +1180,8 @@ function initTrainingApplicationForm() {
   }
 
   byId("lookup-profile").addEventListener("click", lookupProfile);
-  byId("discord-id").addEventListener("input", () => {
+  byId("worker-identifier").addEventListener("input", (event) => {
+    event.target.value = event.target.value.toUpperCase().replace(/\s+/g, "");
     state.profile = null;
     state.applicationType = null;
     byId("profile-summary").hidden = true;

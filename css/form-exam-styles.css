@@ -363,8 +363,35 @@ body.dark-mode .calendar-wrapper iframe {
 .account-lookup {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "identifier action"
+    "guide guide";
   gap: 12px;
   align-items: end;
+}
+.account-lookup > .field-group {
+  grid-area: identifier;
+}
+.account-lookup > .primary-action {
+  grid-area: action;
+}
+.identifier-guide {
+  grid-area: guide;
+  margin: 0;
+  border-left: 3px solid var(--form-accent);
+  padding: 9px 12px;
+  color: var(--text-light);
+  background: rgba(74, 144, 226, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.identifier-guide a {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--form-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .field-group {
   display: grid;
@@ -712,6 +739,10 @@ body.dark-mode .calendar-wrapper iframe {
   }
   .account-lookup {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "identifier"
+      "action"
+      "guide";
   }
   .primary-action {
     width: 100%;
