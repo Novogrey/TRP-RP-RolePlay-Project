@@ -33,7 +33,7 @@
     <meta name="twitter:description" content="Submit a vacation request or an early return from vacation application to the TRP RP Administrative Department." />
     <meta name="twitter:image" content="https://novogrey.github.io/TRP-RP-RolePlay-Project/images/avatar.webp" />
     <meta name="twitter:image:alt" content="TRP RP avatar" />
-    <link rel="stylesheet" href="../../../css/form-exam-styles.css?v=20260801a" />
+    <link rel="stylesheet" href="../../../css/form-exam-styles.css?v=20260802b" />
     <link rel="stylesheet" href="../../../css/form-administrative-styles.css?v=20260729a" />
     <link rel="stylesheet" href="../../../css/shared-menu.css" />
     <link rel="stylesheet" href="../../../css/site-announcements.css" />
@@ -529,19 +529,29 @@
                   </div>
                 </div>
                 <div class="account-lookup">
-                  <label class="field-group" for="worker-identifier">
-                    <span>Идентификатор работника</span>
-                    <input
-                      id="worker-identifier"
-                      name="workerIdentifier"
-                      type="text"
-                      maxlength="32"
-                      autocomplete="off"
-                      spellcheck="false"
-                      placeholder="TRP-RP-XXXX-XXXX-XXXX"
-                      required
-                    />
-                  </label>
+                  <div class="field-group">
+                    <label for="worker-identifier">Идентификатор работника</label>
+                    <div class="identifier-input-wrap">
+                      <input
+                        id="worker-identifier"
+                        name="workerIdentifier"
+                        type="password"
+                        maxlength="32"
+                        autocomplete="off"
+                        spellcheck="false"
+                        placeholder="TRP-RP-XXXX-XXXX-XXXX"
+                        required
+                      />
+                      <button
+                        type="button"
+                        id="toggle-worker-identifier"
+                        class="identifier-visibility-button"
+                        aria-label="Показать идентификатор"
+                        aria-pressed="false"
+                        title="Показать идентификатор"
+                      ><span aria-hidden="true">👁</span></button>
+                    </div>
+                  </div>
                   <button type="button" id="lookup-profile" class="primary-action">
                     Проверить данные
                   </button>
@@ -694,7 +704,7 @@
     <script src="../../../scripts/shared-menu.js?v=20260410b"></script>
     <script src="../../../scripts/vac-sick-script.js?v=20260729a"></script>
     <script src="../../../scripts/training-applications-config.js?v=20260729c"></script>
-    <script src="../../../scripts/form-administrative-script.js?v=20260802a"></script>
+    <script src="../../../scripts/form-administrative-script.js?v=20260802b"></script>
     <script src="../../../scripts/consent-config.js"></script>
     <script src="../../../scripts/consent-manager.js"></script>
   </body>
