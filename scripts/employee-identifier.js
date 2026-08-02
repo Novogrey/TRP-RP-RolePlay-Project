@@ -5,7 +5,7 @@
   const API_URL = String(
     window.TRP_APPLICATIONS_API_URL
     || window.TRP_WORKER_IDENTIFIER_API_URL
-    || 'https://script.google.com/macros/s/AKfycbwRKj_2jYjODHAYWLqg7sskgPdiVDVK4zA1QWlKsBZ1VhR7hM1tJczRLheSHO2TYzLG/exec'
+    || 'https://script.google.com/macros/s/AKfycbw0ImoNs0uVAIvcSzAYZIIg14neJPyW6OfX8ZFeWSVtA7eGFN-iCHVtZl-RsTeujzx6/exec'
   ).trim();
 
   const COPY = {

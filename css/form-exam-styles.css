@@ -642,6 +642,7 @@ body.dark-mode .calendar-wrapper iframe {
   padding: 12px 14px;
   color: var(--text-color);
   background: rgba(74, 144, 226, 0.1);
+  white-space: pre-line;
 }
 .application-status.error {
   border-color: #d83c3e;
