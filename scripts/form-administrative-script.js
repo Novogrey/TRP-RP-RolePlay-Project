@@ -153,7 +153,10 @@ function initAdministrativeApplicationForm() {
   async function readResponse(response) {
     const payload = await response.json().catch(() => null);
     if (!payload || payload.ok === false) {
-      throw new Error(payload?.error || copy("loadFailed"));
+      const message = window.TrpApplicationAccess?.formatMessage(payload?.error)
+        || payload?.error
+        || copy("loadFailed");
+      throw new Error(message);
     }
     return payload;
   }
@@ -188,17 +191,21 @@ function initAdministrativeApplicationForm() {
     const root = byId("application-type-options");
     root.replaceChildren();
     state.config.applicationTypes.forEach((entry) => {
+      const access = state.config.applicationAccess?.[entry.id];
       const label = document.createElement("label");
       label.className = "segment-option";
       const input = document.createElement("input");
       input.type = "radio";
       input.name = "applicationType";
       input.value = entry.id;
+      input.disabled = access?.allowed === false;
       const content = document.createElement("span");
       const title = document.createElement("strong");
       title.textContent = entry.label;
       const description = document.createElement("small");
-      description.textContent = entry.description;
+      description.textContent = input.disabled
+        ? `${entry.description} ${access?.reason || ""}`.trim()
+        : entry.description;
       content.append(title, description);
       label.append(input, content);
       input.addEventListener("change", () => selectApplicationType(entry.id));

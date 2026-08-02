@@ -1,0 +1,51 @@
+.repair-application-page .application-main {
+  min-width: 0;
+}
+
+.repair-service-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.repair-service-options .segment-option > span {
+  min-height: 100%;
+}
+
+.repair-service-options .segment-option small,
+#repair-type-options .segment-option small {
+  line-height: 1.5;
+}
+
+.repair-livery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.repair-review-note {
+  margin-top: 20px;
+}
+
+.repair-review-note p {
+  margin-bottom: 0;
+}
+
+#repair-reason {
+  resize: vertical;
+  min-height: 132px;
+}
+
+#repair-application-result-card[data-status="pending"] {
+  border-left-color: #ff8c00;
+}
+
+@media (max-width: 980px) {
+  .repair-service-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .repair-livery-grid {
+    grid-template-columns: 1fr;
+  }
+}

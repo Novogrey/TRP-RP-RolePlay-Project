@@ -824,7 +824,10 @@ function initTrainingApplicationForm() {
   async function readResponse(response) {
     const payload = await response.json().catch(() => null);
     if (!payload || payload.ok === false) {
-      throw new Error(payload?.error || copy("loadFailed"));
+      const message = window.TrpApplicationAccess?.formatMessage(payload?.error)
+        || payload?.error
+        || copy("loadFailed");
+      throw new Error(message);
     }
     return payload;
   }
@@ -860,19 +863,20 @@ function initTrainingApplicationForm() {
     const root = byId("application-type-options");
     root.replaceChildren();
     state.config.applicationTypes.forEach((entry) => {
+      const access = state.config.applicationAccess?.[entry.id];
       const label = document.createElement("label");
       label.className = "segment-option";
       const input = document.createElement("input");
       input.type = "radio";
       input.name = "applicationType";
       input.value = entry.id;
-      input.disabled = entry.open === false;
+      input.disabled = entry.open === false || access?.allowed === false;
       const box = document.createElement("span");
       const title = document.createElement("strong");
       title.textContent = entry.label;
       const description = document.createElement("small");
-      description.textContent = entry.open === false
-        ? `${entry.description} ${entry.closedReason || ""}`.trim()
+      description.textContent = input.disabled
+        ? `${entry.description} ${access?.reason || entry.closedReason || ""}`.trim()
         : entry.description;
       box.append(title, description);
       label.append(input, box);

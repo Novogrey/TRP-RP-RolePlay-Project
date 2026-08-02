@@ -130,7 +130,10 @@ function initVehicleAssignmentForm() {
   async function readResponse(response) {
     const result = await response.json().catch(() => null);
     if (!result || result.ok === false) {
-      const error = new Error(result?.error || copy("submitFailed"));
+      const message = window.TrpApplicationAccess?.formatMessage(result?.error)
+        || result?.error
+        || copy("submitFailed");
+      const error = new Error(message);
       error.code = result?.code || "API_ERROR";
       throw error;
     }
@@ -140,7 +143,7 @@ function initVehicleAssignmentForm() {
   function showStatus(message, type = "info") {
     const status = byId("vehicle-assignment-status");
     status.hidden = false;
-    status.dataset.type = type;
+    status.className = `application-status ${type === "info" ? "" : type}`.trim();
     status.textContent = message;
   }
 
@@ -148,7 +151,7 @@ function initVehicleAssignmentForm() {
     const status = byId("vehicle-assignment-status");
     status.hidden = true;
     status.textContent = "";
-    delete status.dataset.type;
+    status.className = "application-status";
   }
 
   function updateProgress(step) {
