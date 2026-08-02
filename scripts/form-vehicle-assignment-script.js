@@ -1,9 +1,9 @@
 const vehicleAssignmentCopy = {
   ru: {
+    kicker: "Транспортная база данных TRP RP",
     department: "Транспортная база данных",
     title: "Закрепление транспорта",
-    subtitle:
-      "Автоматическая проверка прав, статуса транспорта и доступных мест",
+    subtitle: "Автоматическое закрепление",
     accountStep: "Проверка аккаунта",
     accountStepSmall: "Идентификатор и Roblox",
     detailsStep: "Параметры операции",
@@ -34,6 +34,7 @@ const vehicleAssignmentCopy = {
     discord: "Аккаунт Discord",
     roblox: "Аккаунт Roblox",
     position: "Должность",
+    availablePoints: "Доступно поинтов",
     currentBindings: "Текущие закрепления",
     noBindings: "Закреплённый транспорт не найден",
     invalidIdentifier: "Укажите корректный идентификатор работника.",
@@ -48,10 +49,10 @@ const vehicleAssignmentCopy = {
     hideIdentifier: "Скрыть идентификатор",
   },
   en: {
+    kicker: "TRP RP transport database",
     department: "Transport database",
     title: "Vehicle assignment",
-    subtitle:
-      "Automatic checks of driving rights, vehicle status and available slots",
+    subtitle: "Automatic vehicle assignment",
     accountStep: "Account verification",
     accountStepSmall: "Identifier and Roblox",
     detailsStep: "Operation details",
@@ -82,6 +83,7 @@ const vehicleAssignmentCopy = {
     discord: "Discord account",
     roblox: "Roblox account",
     position: "Position",
+    availablePoints: "Available points",
     currentBindings: "Current assignments",
     noBindings: "No assigned vehicle was found",
     invalidIdentifier: "Enter a valid employee identifier.",
@@ -166,10 +168,11 @@ function initVehicleAssignmentForm() {
       : `<p>${escapeHtml(copy("noBindings"))}</p>`;
     const summary = byId("vehicle-profile-summary");
     summary.innerHTML = `
-      <div><small>${escapeHtml(copy("discord"))}</small><strong>${escapeHtml(profile.displayName || profile.discordUsername)}</strong></div>
-      <div><small>${escapeHtml(copy("roblox"))}</small><strong><a href="${escapeHtml(profile.robloxProfileUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(profile.robloxUsername)}</a></strong></div>
-      <div><small>${escapeHtml(copy("position"))}</small><strong>${escapeHtml(profile.positionLabel || "—")}</strong></div>
-      <div class="current-bindings"><strong>${escapeHtml(copy("currentBindings"))}</strong>${bindings}</div>`;
+      <div class="profile-item"><small>${escapeHtml(copy("discord"))}</small><strong>${escapeHtml(profile.displayName || profile.discordUsername)}</strong></div>
+      <div class="profile-item"><small>${escapeHtml(copy("roblox"))}</small><strong><a href="${escapeHtml(profile.robloxProfileUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(profile.robloxUsername)}</a></strong></div>
+      <div class="profile-item"><small>${escapeHtml(copy("position"))}</small><strong>${escapeHtml(profile.positionLabel || "—")}</strong></div>
+      <div class="profile-item"><small>${escapeHtml(copy("availablePoints"))}</small><strong>${escapeHtml(profile.points ?? 0)}</strong></div>
+      <div class="profile-item current-bindings"><small>${escapeHtml(copy("currentBindings"))}</small>${bindings}</div>`;
     summary.hidden = false;
   }
 
