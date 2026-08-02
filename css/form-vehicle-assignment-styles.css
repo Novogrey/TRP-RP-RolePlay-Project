@@ -1,7 +1,3 @@
-.vehicle-assignment-page {
-  padding-top: 96px;
-}
-
 .vehicle-assignment-page .application-layout {
   max-width: 1040px;
 }
@@ -23,16 +19,31 @@
   font-weight: 700;
 }
 
-.current-bindings {
-  margin-top: 12px;
-  padding: 12px 14px;
+.profile-summary .current-bindings {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 14px 15px;
   border-left: 3px solid #2b87ff;
+  border-right: 0;
+  border-bottom: 0;
   background: rgba(43, 135, 255, 0.08);
+}
+
+.profile-summary .profile-item:nth-last-child(2) {
+  border-bottom: 1px solid var(--border-color, #d8dde5);
 }
 
 .current-bindings ul {
   margin: 8px 0 0;
   padding-left: 20px;
+}
+
+.current-bindings p {
+  margin: 4px 0 0;
+}
+
+.current-bindings li + li {
+  margin-top: 4px;
 }
 
 .vehicle-result {
@@ -74,8 +85,8 @@
 }
 
 @media (max-width: 680px) {
-  .vehicle-assignment-page {
-    padding-top: 78px;
+  .profile-summary .current-bindings {
+    grid-column: auto;
   }
 
   .vehicle-result dl {
