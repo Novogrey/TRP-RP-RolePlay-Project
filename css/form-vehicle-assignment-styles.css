@@ -1,0 +1,89 @@
+.vehicle-assignment-page {
+  padding-top: 96px;
+}
+
+.vehicle-assignment-page .application-layout {
+  max-width: 1040px;
+}
+
+.vehicle-reference {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color, #d8dde5);
+  border-radius: 6px;
+  background: var(--card-bg, #fff);
+}
+
+.vehicle-reference p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.vehicle-reference a {
+  font-weight: 700;
+}
+
+.current-bindings {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-left: 3px solid #2b87ff;
+  background: rgba(43, 135, 255, 0.08);
+}
+
+.current-bindings ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.vehicle-result {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--border-color, #d8dde5);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: var(--card-bg, #fff);
+}
+
+.vehicle-result[data-status="accepted"] {
+  border-left-color: #2e7d32;
+}
+
+.vehicle-result[data-status="rejected"] {
+  border-left-color: #d83c3e;
+}
+
+.vehicle-result h3 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+
+.vehicle-result dl {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.4fr) 1fr;
+  gap: 8px 16px;
+  margin: 14px 0 0;
+}
+
+.vehicle-result dt {
+  font-weight: 700;
+}
+
+.vehicle-result dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+  .vehicle-assignment-page {
+    padding-top: 78px;
+  }
+
+  .vehicle-result dl {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .vehicle-result dd {
+    margin-bottom: 8px;
+  }
+}
