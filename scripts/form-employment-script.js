@@ -1,14 +1,14 @@
-const administrativeFormTranslations = {
+const employmentFormTranslations = {
   ru: {
     "Административный отдел TRP RP": "Административный отдел TRP RP",
-    "Отпуск и досрочный выход": "Отпуск и досрочный выход",
-    "Данные проверяются автоматически": "Данные проверяются автоматически",
+    "Увольнение и восстановление": "Увольнение и восстановление",
+    "Рассмотрение занимает до 3 дней": "Рассмотрение занимает до 3 дней",
     "Решение только в Discord": "Решение только в Discord",
     "Административный отдел": "Административный отдел",
     "Проверка аккаунта": "Проверка аккаунта",
     "Discord и Roblox": "Идентификатор и Roblox",
     "Параметры заявления": "Параметры заявления",
-    "Отпуск или досрочный выход": "Отпуск или досрочный выход",
+    "Увольнение или восстановление": "Увольнение или восстановление",
     "Рассмотрение": "Рассмотрение",
     "Решение Административного отдела": "Решение Административного отдела",
     "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.":
@@ -21,23 +21,23 @@ const administrativeFormTranslations = {
     "Выберите заявление и заполните относящиеся к нему поля.":
       "Выберите заявление и заполните относящиеся к нему поля.",
     "Выберите заявление": "Выберите заявление",
-    "Тип отпуска": "Тип отпуска",
-    "Описание типов отпуска": "Описание типов отпуска",
-    "Причина отпуска": "Причина отпуска",
-    "Номер приказа предоставленного отпуска": "Номер приказа предоставленного отпуска",
-    "Причина досрочного выхода из отпуска": "Причина досрочного выхода из отпуска",
+    "Тип увольнения": "Тип увольнения",
+    "Описание типов увольнения": "Описание типов увольнения",
+    "Причина увольнения": "Причина увольнения",
+    "Номер приказа об увольнении": "Номер приказа об увольнении",
+    "Причина восстановления": "Причина восстановления",
     "Отправить заявление": "Отправить заявление"
   },
   en: {
     "Административный отдел TRP RP": "TRP RP Administrative Department",
-    "Отпуск и досрочный выход": "Vacation and Early Return",
-    "Данные проверяются автоматически": "Account details are checked automatically",
+    "Увольнение и восстановление": "Resignation and Reinstatement",
+    "Рассмотрение занимает до 3 дней": "Review takes up to 3 days",
     "Решение только в Discord": "Decision only in Discord",
     "Административный отдел": "Administrative Department",
     "Проверка аккаунта": "Account verification",
     "Discord и Roblox": "Identifier and Roblox",
     "Параметры заявления": "Application details",
-    "Отпуск или досрочный выход": "Vacation or early return",
+    "Увольнение или восстановление": "Resignation or reinstatement",
     "Рассмотрение": "Review",
     "Решение Административного отдела": "Administrative Department decision",
     "Укажите личный идентификатор работника, полученный через бота TRP RP Systems.":
@@ -50,27 +50,28 @@ const administrativeFormTranslations = {
     "Выберите заявление и заполните относящиеся к нему поля.":
       "Choose an application and complete the relevant fields.",
     "Выберите заявление": "Choose an application",
-    "Тип отпуска": "Vacation type",
-    "Описание типов отпуска": "Vacation type descriptions",
-    "Причина отпуска": "Reason for vacation",
-    "Номер приказа предоставленного отпуска": "Vacation order number",
-    "Причина досрочного выхода из отпуска": "Reason for early return from vacation",
+    "Тип увольнения": "Resignation type",
+    "Описание типов увольнения": "Resignation type descriptions",
+    "Причина увольнения": "Reason for resignation",
+    "Номер приказа об увольнении": "Resignation order number",
+    "Причина восстановления": "Reason for reinstatement",
     "Отправить заявление": "Submit application"
   }
 };
 
 if (typeof translations !== "undefined") {
-  Object.assign(translations.ru, administrativeFormTranslations.ru);
-  Object.assign(translations.en, administrativeFormTranslations.en);
+  Object.assign(translations.ru, employmentFormTranslations.ru);
+  Object.assign(translations.en, employmentFormTranslations.en);
 }
 
-const administrativePageCopy = {
+const employmentPageCopy = {
   ru: {
     apiMissing: "Форма ещё не подключена к API заявлений.",
     invalidIdentifier: "Укажите корректный идентификатор работника.",
     loading: "Проверяем идентификатор, верификацию и участие в Roblox-группе...",
     profileReady: "Данные подтверждены. Заполните параметры заявления.",
     loadFailed: "Не удалось проверить данные. Повторите попытку позднее.",
+    incompatibleConfig: "Сервер вернул конфигурацию другой формы. Обновите бота и GAS-прокси, затем повторите попытку.",
     discord: "Аккаунт Discord",
     roblox: "Аккаунт Roblox",
     position: "Должность",
@@ -79,6 +80,7 @@ const administrativePageCopy = {
     submitting: "Отправляем заявление...",
     submitFailed: "Не удалось отправить заявление.",
     submitted: "Заявление отправлено.",
+    reviewDeadline: "Срок рассмотрения — до 3 дней. Решение будет опубликовано в Discord.",
     required: "Заполните все обязательные поля.",
     invalidReason: "Причина должна содержать от 10 до 1500 символов."
   },
@@ -88,6 +90,7 @@ const administrativePageCopy = {
     loading: "Checking the identifier, verification and Roblox group membership...",
     profileReady: "Account details confirmed. Complete the application.",
     loadFailed: "Account details could not be checked. Try again later.",
+    incompatibleConfig: "The server returned configuration for another form. Update the bot and GAS proxy, then try again.",
     discord: "Discord account",
     roblox: "Roblox account",
     position: "Position",
@@ -96,13 +99,14 @@ const administrativePageCopy = {
     submitting: "Submitting application...",
     submitFailed: "The application could not be submitted.",
     submitted: "Application submitted.",
+    reviewDeadline: "Review takes up to 3 days. The decision will be published in Discord.",
     required: "Complete all required fields.",
     invalidReason: "The reason must contain between 10 and 1,500 characters."
   }
 };
 
-function initAdministrativeApplicationForm() {
-  const form = document.getElementById("administrative-application-form");
+function initEmploymentApplicationForm() {
+  const form = document.getElementById("employment-application-form");
   if (!form || form.dataset.initialized === "true") return;
   form.dataset.initialized = "true";
 
@@ -113,7 +117,7 @@ function initAdministrativeApplicationForm() {
   };
   const byId = (id) => document.getElementById(id);
   const lang = () => (localStorage.getItem("language") === "en" ? "en" : "ru");
-  const copy = (key) => administrativePageCopy[lang()][key];
+  const copy = (key) => employmentPageCopy[lang()][key];
   const apiBase = String(
     window.TRP_APPLICATIONS_API_URL
     || window.TRP_TRAINING_APPLICATIONS_API_URL
@@ -206,16 +210,34 @@ function initAdministrativeApplicationForm() {
     });
   }
 
-  function renderVacationTypes() {
-    const select = byId("vacation-type");
-    const descriptions = byId("vacation-type-descriptions");
+  function selectEmploymentConfig(config) {
+    const employmentTypes = config?.forms?.employment?.applicationTypes;
+    const applicationTypes = Array.isArray(employmentTypes)
+      ? employmentTypes
+      : config?.applicationTypes;
+    const ids = Array.isArray(applicationTypes)
+      ? applicationTypes.map((entry) => entry.id).sort()
+      : [];
+    if (ids.join(",") !== "reinstatement,resignation") {
+      throw new Error(copy("incompatibleConfig"));
+    }
+    return {
+      ...config,
+      formType: "employment",
+      applicationTypes
+    };
+  }
+
+  function renderResignationTypes() {
+    const select = byId("resignation-type");
+    const descriptions = byId("resignation-type-descriptions");
     select.replaceChildren();
     descriptions.replaceChildren();
     const empty = document.createElement("option");
     empty.value = "";
     empty.textContent = copy("choose");
     select.append(empty);
-    state.config.vacationTypes.forEach((entry) => {
+    state.config.resignationTypes.forEach((entry) => {
       const option = document.createElement("option");
       option.value = entry.id;
       option.textContent = entry.label;
@@ -223,7 +245,7 @@ function initAdministrativeApplicationForm() {
 
       const item = document.createElement("article");
       item.className = "vacation-type-description";
-      item.dataset.vacationType = entry.id;
+      item.dataset.resignationType = entry.id;
       const title = document.createElement("strong");
       title.textContent = entry.label;
       const description = document.createElement("p");
@@ -232,8 +254,8 @@ function initAdministrativeApplicationForm() {
       descriptions.append(item);
     });
     const updateSelection = () => {
-      descriptions.querySelectorAll("[data-vacation-type]").forEach((item) => {
-        item.classList.toggle("is-selected", item.dataset.vacationType === select.value);
+      descriptions.querySelectorAll("[data-resignation-type]").forEach((item) => {
+        item.classList.toggle("is-selected", item.dataset.resignationType === select.value);
       });
     };
     select.onchange = updateSelection;
@@ -242,9 +264,9 @@ function initAdministrativeApplicationForm() {
 
   function applyQuestionConfig() {
     const fields = {
-      vacationReason: "vacation-reason",
-      orderNumber: "order-number",
-      earlyReturnReason: "early-return-reason"
+      resignationReason: "resignation-reason",
+      resignationOrderNumber: "resignation-order-number",
+      reinstatementReason: "reinstatement-reason"
     };
     Object.entries(fields).forEach(([questionId, fieldId]) => {
       const question = state.config?.questions?.[questionId];
@@ -282,12 +304,12 @@ function initAdministrativeApplicationForm() {
 
   function selectApplicationType(type) {
     state.applicationType = type;
-    setConditionalFieldState(byId("vacation-fields"), type === "vacation");
-    setConditionalFieldState(byId("early-return-fields"), type === "early_return");
+    setConditionalFieldState(byId("resignation-fields"), type === "resignation");
+    setConditionalFieldState(byId("reinstatement-fields"), type === "reinstatement");
     byId("submit-application").disabled = false;
     clearStatus();
     updateProgress("details");
-    if (type === "vacation") renderVacationTypes();
+    if (type === "resignation") renderResignationTypes();
   }
 
   async function lookupProfile() {
@@ -308,7 +330,7 @@ function initAdministrativeApplicationForm() {
         fetch(
           endpoint({
             action: "administrative-config",
-            formType: "vacation",
+            formType: "employment",
             language: lang(),
             _: Date.now()
           }),
@@ -324,15 +346,15 @@ function initAdministrativeApplicationForm() {
           { cache: "no-store" }
         ).then(readResponse)
       ]);
-      state.config = configResult.config;
+      state.config = selectEmploymentConfig(configResult.config);
       state.profile = profileResult.profile;
       state.applicationType = null;
       renderProfile();
       renderApplicationTypes();
       applyQuestionConfig();
       byId("application-details").hidden = false;
-      setConditionalFieldState(byId("vacation-fields"), false);
-      setConditionalFieldState(byId("early-return-fields"), false);
+      setConditionalFieldState(byId("resignation-fields"), false);
+      setConditionalFieldState(byId("reinstatement-fields"), false);
       byId("submit-application").disabled = true;
       showStatus(copy("profileReady"), "success");
       updateProgress("details");
@@ -358,31 +380,31 @@ function initAdministrativeApplicationForm() {
     }
     const payload = {
       system: "administrative",
-      formType: "vacation",
+      formType: "employment",
       workerIdentifier: byId("worker-identifier").value.trim().toUpperCase(),
       language: lang(),
       applicationType: state.applicationType
     };
-    if (state.applicationType === "vacation") {
-      payload.vacationType = byId("vacation-type").value;
-      payload.reason = byId("vacation-reason").value.trim();
-      if (!payload.vacationType) {
+    if (state.applicationType === "resignation") {
+      payload.resignationType = byId("resignation-type").value;
+      payload.reason = byId("resignation-reason").value.trim();
+      if (!payload.resignationType) {
         showStatus(copy("required"), "error");
         return;
       }
-      if (!validateConfiguredLength(payload.reason, "vacationReason")) {
-        showStatus(configuredLengthError("vacationReason"), "error");
+      if (!validateConfiguredLength(payload.reason, "resignationReason")) {
+        showStatus(configuredLengthError("resignationReason"), "error");
         return;
       }
     } else {
-      payload.orderNumber = byId("order-number").value.trim();
-      payload.reason = byId("early-return-reason").value.trim();
-      if (!validateConfiguredLength(payload.orderNumber, "orderNumber")) {
-        showStatus(configuredLengthError("orderNumber"), "error");
+      payload.orderNumber = byId("resignation-order-number").value.trim();
+      payload.reason = byId("reinstatement-reason").value.trim();
+      if (!validateConfiguredLength(payload.orderNumber, "resignationOrderNumber")) {
+        showStatus(configuredLengthError("resignationOrderNumber"), "error");
         return;
       }
-      if (!validateConfiguredLength(payload.reason, "earlyReturnReason")) {
-        showStatus(configuredLengthError("earlyReturnReason"), "error");
+      if (!validateConfiguredLength(payload.reason, "reinstatementReason")) {
+        showStatus(configuredLengthError("reinstatementReason"), "error");
         return;
       }
     }
@@ -392,7 +414,7 @@ function initAdministrativeApplicationForm() {
     try {
       const body = new URLSearchParams({ payload: JSON.stringify(payload) });
       const result = await fetch(apiBase, { method: "POST", body }).then(readResponse);
-      showStatus(result.message || copy("submitted"), "success");
+      showStatus(`${result.message || copy("submitted")} ${copy("reviewDeadline")}`, "success");
       [...form.elements].forEach((element) => {
         element.disabled = true;
       });
@@ -404,10 +426,10 @@ function initAdministrativeApplicationForm() {
     }
   }
 
-  byId("vacation-reason").placeholder = copy("reasonPlaceholder");
-  byId("early-return-reason").placeholder = copy("reasonPlaceholder");
-  setConditionalFieldState(byId("vacation-fields"), false);
-  setConditionalFieldState(byId("early-return-fields"), false);
+  byId("resignation-reason").placeholder = copy("reasonPlaceholder");
+  byId("reinstatement-reason").placeholder = copy("reasonPlaceholder");
+  setConditionalFieldState(byId("resignation-fields"), false);
+  setConditionalFieldState(byId("reinstatement-fields"), false);
   byId("lookup-profile").addEventListener("click", lookupProfile);
   const identifierInput = byId("worker-identifier");
   const identifierToggle = byId("toggle-worker-identifier");
@@ -442,14 +464,14 @@ function initAdministrativeApplicationForm() {
 
 if (typeof reinitializeEventListeners === "function") {
   const previousReinitializeEventListeners = reinitializeEventListeners;
-  reinitializeEventListeners = function reinitializeAdministrativePage() {
+  reinitializeEventListeners = function reinitializeEmploymentPage() {
     previousReinitializeEventListeners();
-    queueMicrotask(initAdministrativeApplicationForm);
+    queueMicrotask(initEmploymentApplicationForm);
   };
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initAdministrativeApplicationForm);
+  document.addEventListener("DOMContentLoaded", initEmploymentApplicationForm);
 } else {
-  initAdministrativeApplicationForm();
+  initEmploymentApplicationForm();
 }
