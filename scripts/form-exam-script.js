@@ -1117,6 +1117,8 @@ function initTrainingApplicationForm() {
       ]);
       state.config = configResult.config;
       state.profile = profileResult.profile;
+      state.config.applicationAccess = state.profile.applicationAccess || state.config.applicationAccess;
+      window.TrpApplicationAccess?.render(state.config.applicationAccess);
       renderProfile();
       renderApplicationTypes();
       byId("application-details").hidden = false;
