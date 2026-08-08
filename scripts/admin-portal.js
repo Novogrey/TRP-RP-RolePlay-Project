@@ -45,6 +45,9 @@
       decisionSaved: 'Решение сохранено. Заявление удалено из открытого списка.', statusSaved: 'Статус опубликован.',
       vehicleSaved: 'Изменения сохранены в Google Sheets.', importConfirm: 'Заменить базу в Google Sheets данными текущей страницы списка автотранспорта?',
       importDone: 'Текущий список импортирован.', deleteConfirm: 'Удалить эту запись?', edit: 'Изменить', delete: 'Удалить',
+      selectModel: 'Выберите модель', selectStatus: 'Выберите статус', selectLivery: 'Выберите окраску',
+      liveriesUnavailable: 'Для этой модели окраски недоступны.', duplicateBoard: 'Этот бортовой номер уже используется.',
+      duplicateFactory: 'Этот заводской номер уже используется.',
       currentScore: 'Автоматические баллы', answer: 'Ответ', score: 'Баллы', accessDenied: 'Раздел недоступен для ваших ролей.',
       show: 'Показать', hide: 'Скрыть'
     },
@@ -80,6 +83,9 @@
       decisionSaved: 'The decision was saved. The application was removed from the open list.', statusSaved: 'Status published.',
       vehicleSaved: 'Changes saved to Google Sheets.', importConfirm: 'Replace the Google Sheets database with the current vehicle-list page data?',
       importDone: 'The current list was imported.', deleteConfirm: 'Delete this record?', edit: 'Edit', delete: 'Delete',
+      selectModel: 'Select a model', selectStatus: 'Select a status', selectLivery: 'Select a livery',
+      liveriesUnavailable: 'No liveries are available for this model.', duplicateBoard: 'This fleet number is already in use.',
+      duplicateFactory: 'This factory number is already in use.',
       currentScore: 'Automatic score', answer: 'Answer', score: 'Score', accessDenied: 'This section is unavailable for your roles.',
       show: 'Show', hide: 'Hide'
     }
@@ -87,6 +93,16 @@
 
   const t = key => copy[state.language][key] || key;
   const byId = id => document.getElementById(id);
+  const vehicleStatuses = [
+    'Эксплуатируется',
+    'В ремонте',
+    'Не эксплуатируется',
+    'Выведен из эксплуатации / ожидание исключения',
+    'Капитально-восстановительный ремонт',
+    'Списан',
+    'Передан в другой город',
+    'Местонахождение и судьба неизвестны'
+  ];
 
   function maskIdentifier(identifier) {
     return /^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(identifier)
@@ -543,6 +559,72 @@
     informationEn: 'vehicle-info-en', code: 'vehicle-code'
   };
 
+  function normalizedVehicleValue(value) {
+    return String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/\s+/g, ' ');
+  }
+
+  function meaningfulFactoryNumber(value) {
+    const normalized = normalizedVehicleValue(value);
+    return normalized && !['-', '—', 'утерян', 'unknown', 'none', 'отсутствует'].includes(normalized)
+      ? normalized
+      : '';
+  }
+
+  function uniqueVehicleValues(key, extra = []) {
+    return [...new Set([
+      ...state.vehicleDatabase.vehicles.map(vehicle => String(vehicle[key] || '').trim()),
+      ...extra.map(value => String(value || '').trim())
+    ].filter(Boolean))].sort((left, right) => left.localeCompare(right, state.language === 'ru' ? 'ru' : 'en'));
+  }
+
+  function populateVehicleSelect(select, values, selected, placeholder) {
+    select.replaceChildren();
+    const empty = document.createElement('option');
+    empty.value = '';
+    empty.textContent = placeholder;
+    empty.disabled = select.required;
+    select.append(empty);
+    values.forEach(value => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    });
+    select.value = selected || '';
+  }
+
+  function populateVehicleChoices(vehicle = null) {
+    const catalogModels = window.TrpVehicleCatalog?.getModels?.() || [];
+    populateVehicleSelect(
+      byId('vehicle-model'),
+      uniqueVehicleValues('model', [...catalogModels, ...(vehicle?.model ? [vehicle.model] : [])]),
+      vehicle?.model || '',
+      t('selectModel')
+    );
+    populateVehicleSelect(
+      byId('vehicle-status'),
+      uniqueVehicleValues('status', [...vehicleStatuses, ...(vehicle?.status ? [vehicle.status] : [])]),
+      vehicle?.status || '',
+      t('selectStatus')
+    );
+    populateLiveryChoices(vehicle?.livery || '', true);
+  }
+
+  function populateLiveryChoices(selected = '', preserveLegacy = false) {
+    const select = byId('vehicle-livery');
+    const model = byId('vehicle-model').value;
+    const catalog = window.TrpVehicleCatalog;
+    const values = catalog?.getLiveries ? catalog.getLiveries(model) : [];
+    if (preserveLegacy && selected && selected !== '-' && !values.includes(selected)) values.push(selected);
+    populateVehicleSelect(
+      select,
+      [...new Set(values)],
+      selected === '-' ? '' : selected,
+      values.length ? t('selectLivery') : t('liveriesUnavailable')
+    );
+    select.disabled = !values.length;
+  }
+
   function photoField(key, label, value = '', type = 'text') {
     const field = document.createElement('label');
     field.className = 'admin-field';
@@ -680,6 +762,7 @@
     const title = byId('vehicle-dialog-title');
     title.dataset.copy = vehicle ? 'editVehicleRecord' : 'addVehicleRecord';
     title.textContent = t(title.dataset.copy);
+    populateVehicleChoices(vehicle);
     Object.entries(vehicleFieldIds).forEach(([key, id]) => {
       byId(id).value = vehicle?.[key] ?? (key === 'sortOrder' ? state.vehicleDatabase.vehicles.length : '');
     });
@@ -699,6 +782,16 @@
         vehicle[key] = key === 'sortOrder' ? Number(byId(id).value) || 0 : byId(id).value.trim();
       });
       vehicle.id = vehicle.id || vehicle.boardNumber;
+      const duplicateBoard = state.vehicleDatabase.vehicles.some(entry => (
+        entry.id !== vehicle.id
+        && normalizedVehicleValue(entry.boardNumber) === normalizedVehicleValue(vehicle.boardNumber)
+      ));
+      if (duplicateBoard) throw new Error(t('duplicateBoard'));
+      const factoryNumber = meaningfulFactoryNumber(vehicle.factoryNumber);
+      const duplicateFactory = factoryNumber && state.vehicleDatabase.vehicles.some(entry => (
+        entry.id !== vehicle.id && meaningfulFactoryNumber(entry.factoryNumber) === factoryNumber
+      ));
+      if (duplicateFactory) throw new Error(t('duplicateFactory'));
       vehicle.photos = collectVehiclePhotos();
       await saveVehicleOperation({ action: 'upsertVehicle', vehicle });
       byId('vehicle-dialog').close();
@@ -709,7 +802,7 @@
 
   async function deleteVehicle(vehicle) {
     if (!confirm(t('deleteConfirm'))) return;
-    await saveVehicleOperation({ action: 'deleteVehicle', vehicleId: vehicle.id });
+    await saveVehicleOperation({ action: 'deleteVehicle', vehicleId: vehicle.id, boardNumber: vehicle.boardNumber });
   }
 
   async function importCurrentVehicleList() {
@@ -794,6 +887,7 @@
       renderVehicles();
     });
     byId('add-vehicle-photo').addEventListener('click', () => addPhoto());
+    byId('vehicle-model').addEventListener('change', () => populateLiveryChoices());
     byId('import-vehicle-list').addEventListener('click', () => importCurrentVehicleList().catch(error => setNotice('vehicle-notice', error.message, 'error')));
     byId('decision-form').addEventListener('submit', event => { event.preventDefault(); submitDecision().catch(error => setNotice('admin-notice', error.message, 'error')); });
     byId('section-form').addEventListener('submit', event => { event.preventDefault(); saveSection().catch(error => setNotice('vehicle-notice', error.message, 'error')); });
