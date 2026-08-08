@@ -67,6 +67,12 @@
   const t = key => copy[state.language][key] || key;
   const byId = id => document.getElementById(id);
 
+  function maskIdentifier(identifier) {
+    return /^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(identifier)
+      ? 'TRP-RP-••••-••••-••••'
+      : '';
+  }
+
   function setNotice(id, message, type) {
     const element = byId(id);
     if (!element) return;
@@ -560,7 +566,7 @@
     }
     byId('admin-workspace').hidden = false;
     byId('admin-account').hidden = false;
-    byId('admin-account-name').textContent = identifier;
+    byId('admin-account-name').textContent = maskIdentifier(identifier);
     setNotice('admin-notice', t('ready'), 'success');
   }
 
