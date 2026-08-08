@@ -8,7 +8,8 @@
     identifier: '',
     applications: [],
     statusProfile: null,
-    vehicleDatabase: { sections: [], vehicles: [] }
+    vehicleDatabase: { sections: [], vehicles: [] },
+    vehicleSectionFilter: ''
   };
   const copy = {
     ru: {
@@ -20,12 +21,22 @@
       serverStatusText: 'Изменение сохраняется в MongoDB и публикуется в Discord.', newStatus: 'Новый статус',
       comment: 'Комментарий', publishStatus: 'Опубликовать статус', vehicleDatabase: 'База автотранспорта',
       vehicleDatabaseText: 'Разделы и записи синхронизируются с Google Sheets.', importCurrent: 'Импортировать текущий список',
-      addVehicle: 'Добавить транспорт', sections: 'Разделы', cancel: 'Отмена', confirm: 'Подтвердить', save: 'Сохранить',
-      vehicleRecord: 'Запись автотранспорта', sectionRecord: 'Раздел списка', section: 'Раздел', sortOrder: 'Порядок',
+      addVehicle: 'Добавить транспорт', sections: 'Разделы', filterSection: 'Фильтр по разделу', allSections: 'Все разделы',
+      vehicleCount: 'Показано: {shown} из {total}', noVehiclesInSection: 'В выбранном разделе нет записей.',
+      cancel: 'Отмена', confirm: 'Подтвердить', save: 'Сохранить',
+      vehicleRecord: 'Запись автотранспорта', addVehicleRecord: 'Регистрация транспорта', editVehicleRecord: 'Редактирование транспорта',
+      sectionRecord: 'Раздел списка', section: 'Раздел', sortOrder: 'Порядок',
       boardNumber: 'Бортовой номер', model: 'Модель', status: 'Статус', factoryNumber: 'Заводской номер',
       built: 'Построен', arrived: 'Поступил', assignmentRu: 'Назначение (RU)', assignmentEn: 'Назначение (EN)',
       livery: 'Окраска', drivers: 'Закреплённые водители', informationRu: 'Дополнительная информация (RU)',
-      informationEn: 'Дополнительная информация (EN)', code: 'Код', photos: 'Фотографии (JSON)', nameRu: 'Название (RU)',
+      informationEn: 'Дополнительная информация (EN)', code: 'Код', photos: 'Фотографии', nameRu: 'Название (RU)',
+      vehicleMain: 'Основные данные', vehicleMainText: 'Раздел, идентификаторы и текущее состояние транспорта.',
+      vehicleDetails: 'Эксплуатационные данные', vehicleDetailsText: 'Даты, назначение, окраска и закреплённые сотрудники.',
+      vehicleInformation: 'Информация и код', vehicleInformationText: 'Тексты для обеих языковых версий и служебный код.',
+      photosHelp: 'Добавьте прямую ссылку на изображение и данные для подписи.', addPhoto: 'Добавить фотографию',
+      photo: 'Фотография', imageUrl: 'URL изображения', depotRu: 'Депо (RU)', depotEn: 'Депо (EN)', photoDate: 'Дата',
+      photoAuthor: 'Автор', authorUrl: 'Ссылка на автора', photoEvent: 'Событие или подпись', removePhoto: 'Удалить',
+      noPhotos: 'Фотографии не добавлены.', invalidPhotoUrl: 'Укажите корректную ссылку на изображение.',
       nameEn: 'Название (EN)', loading: 'Проверяем доступ к разделам...', ready: 'Доступ проверен.', invalidId: 'Укажите идентификатор формата TRP-RP-XXXX-XXXX-XXXX.',
       requestFailed: 'Не удалось выполнить запрос.', noApplications: 'Открытых заявлений для ваших ролей нет.',
       noVehicleData: 'В таблице пока нет разделов и записей.', applicant: 'Заявитель', position: 'Должность', points: 'Поинты',
@@ -45,12 +56,22 @@
       refresh: 'Refresh', serverStatusText: 'Changes are stored in MongoDB and published to Discord.', newStatus: 'New status',
       comment: 'Comment', publishStatus: 'Publish status', vehicleDatabase: 'Vehicle database',
       vehicleDatabaseText: 'Sections and records are synchronized with Google Sheets.', importCurrent: 'Import current list',
-      addVehicle: 'Add vehicle', sections: 'Sections', cancel: 'Cancel', confirm: 'Confirm', save: 'Save',
-      vehicleRecord: 'Vehicle record', sectionRecord: 'List section', section: 'Section', sortOrder: 'Order',
+      addVehicle: 'Add vehicle', sections: 'Sections', filterSection: 'Filter by section', allSections: 'All sections',
+      vehicleCount: 'Showing {shown} of {total}', noVehiclesInSection: 'There are no records in the selected section.',
+      cancel: 'Cancel', confirm: 'Confirm', save: 'Save',
+      vehicleRecord: 'Vehicle record', addVehicleRecord: 'Register vehicle', editVehicleRecord: 'Edit vehicle',
+      sectionRecord: 'List section', section: 'Section', sortOrder: 'Order',
       boardNumber: 'Fleet number', model: 'Model', status: 'Status', factoryNumber: 'Factory number', built: 'Built',
       arrived: 'Arrived', assignmentRu: 'Assignment (RU)', assignmentEn: 'Assignment (EN)', livery: 'Livery',
       drivers: 'Assigned drivers', informationRu: 'Additional information (RU)', informationEn: 'Additional information (EN)',
-      code: 'Code', photos: 'Photos (JSON)', nameRu: 'Name (RU)', nameEn: 'Name (EN)', loading: 'Checking section access...',
+      code: 'Code', photos: 'Photos', nameRu: 'Name (RU)', nameEn: 'Name (EN)',
+      vehicleMain: 'Main data', vehicleMainText: 'Section, identifiers and current vehicle status.',
+      vehicleDetails: 'Operational data', vehicleDetailsText: 'Dates, assignment, livery and assigned employees.',
+      vehicleInformation: 'Information and code', vehicleInformationText: 'Text for both language versions and the service code.',
+      photosHelp: 'Add a direct image URL and the information displayed with it.', addPhoto: 'Add photo',
+      photo: 'Photo', imageUrl: 'Image URL', depotRu: 'Depot (RU)', depotEn: 'Depot (EN)', photoDate: 'Date',
+      photoAuthor: 'Author', authorUrl: 'Author URL', photoEvent: 'Event or caption', removePhoto: 'Remove',
+      noPhotos: 'No photos added.', invalidPhotoUrl: 'Enter a valid image URL.', loading: 'Checking section access...',
       ready: 'Access check completed.', invalidId: 'Enter an identifier in the TRP-RP-XXXX-XXXX-XXXX format.',
       requestFailed: 'The request could not be completed.', noApplications: 'There are no open applications for your roles.',
       noVehicleData: 'The spreadsheet does not contain any sections or records yet.', applicant: 'Applicant', position: 'Position',
@@ -379,16 +400,33 @@
     const sectionList = byId('vehicle-sections');
     const vehicleList = byId('vehicle-list');
     const sectionSelect = byId('vehicle-section');
-    if (!sectionList || !vehicleList || !sectionSelect) return;
+    const sectionFilter = byId('vehicle-section-filter');
+    const vehicleCount = byId('vehicle-count');
+    if (!sectionList || !vehicleList || !sectionSelect || !sectionFilter) return;
     sectionList.replaceChildren();
     vehicleList.replaceChildren();
     sectionSelect.replaceChildren();
+    sectionFilter.replaceChildren();
     const sections = [...state.vehicleDatabase.sections].sort((a, b) => a.sortOrder - b.sortOrder);
+    if (state.vehicleSectionFilter && !sections.some(section => section.id === state.vehicleSectionFilter)) {
+      state.vehicleSectionFilter = '';
+    }
+    const allSections = document.createElement('option');
+    allSections.value = '';
+    allSections.textContent = t('allSections');
+    sectionFilter.append(allSections);
     sections.forEach(section => {
       const row = document.createElement('div');
       row.className = 'admin-section-row';
-      const label = document.createElement('strong');
-      label.textContent = state.language === 'ru' ? section.nameRu : section.nameEn;
+      row.classList.toggle('is-active', state.vehicleSectionFilter === section.id);
+      const label = button(
+        state.language === 'ru' ? section.nameRu : section.nameEn,
+        'admin-section-name',
+        () => {
+          state.vehicleSectionFilter = section.id;
+          renderVehicles();
+        }
+      );
       row.append(
         label,
         button('✎', 'admin-icon-button', () => openSection(section)),
@@ -399,15 +437,34 @@
       optionElement.value = section.id;
       optionElement.textContent = label.textContent;
       sectionSelect.append(optionElement);
+      sectionFilter.append(optionElement.cloneNode(true));
     });
+    sectionFilter.value = state.vehicleSectionFilter;
     if (!sections.length && !state.vehicleDatabase.vehicles.length) {
       const empty = document.createElement('div');
       empty.className = 'admin-empty';
       empty.textContent = t('noVehicleData');
       vehicleList.append(empty);
+      if (vehicleCount) vehicleCount.textContent = '';
       return;
     }
-    [...state.vehicleDatabase.vehicles].sort((a, b) => a.sectionId.localeCompare(b.sectionId) || a.sortOrder - b.sortOrder).forEach(vehicle => {
+    const vehicles = [...state.vehicleDatabase.vehicles]
+      .filter(vehicle => !state.vehicleSectionFilter || vehicle.sectionId === state.vehicleSectionFilter)
+      .sort((a, b) => a.sectionId.localeCompare(b.sectionId) || a.sortOrder - b.sortOrder);
+    if (vehicleCount) {
+      vehicleCount.textContent = t('vehicleCount')
+        .replace('{shown}', String(vehicles.length))
+        .replace('{total}', String(state.vehicleDatabase.vehicles.length));
+    }
+    if (!vehicles.length) {
+      const empty = document.createElement('div');
+      empty.className = 'admin-empty';
+      empty.textContent = t('noVehiclesInSection');
+      vehicleList.append(empty);
+      return;
+    }
+    const sectionMap = new Map(sections.map(section => [section.id, state.language === 'ru' ? section.nameRu : section.nameEn]));
+    vehicles.forEach(vehicle => {
       const row = document.createElement('article');
       row.className = 'admin-vehicle-row';
       const head = document.createElement('div');
@@ -418,7 +475,7 @@
       title.textContent = `${vehicle.boardNumber} · ${vehicle.model}`;
       const meta = document.createElement('p');
       meta.className = 'admin-item-meta';
-      meta.textContent = vehicle.status;
+      meta.textContent = `${sectionMap.get(vehicle.sectionId) || vehicle.sectionId} · ${vehicle.status}`;
       info.append(title, meta);
       const actions = document.createElement('div');
       actions.className = 'admin-item-actions';
@@ -486,29 +543,168 @@
     informationEn: 'vehicle-info-en', code: 'vehicle-code'
   };
 
+  function photoField(key, label, value = '', type = 'text') {
+    const field = document.createElement('label');
+    field.className = 'admin-field';
+    const caption = document.createElement('span');
+    caption.dataset.copy = label;
+    caption.textContent = t(label);
+    const input = document.createElement('input');
+    input.type = type;
+    input.value = value || '';
+    input.dataset.photoKey = key;
+    input.autocomplete = 'off';
+    field.append(caption, input);
+    return field;
+  }
+
+  function updatePhotoPreview(card) {
+    const input = card.querySelector('[data-photo-key="img"]');
+    const image = card.querySelector('.admin-photo-preview img');
+    const placeholder = card.querySelector('.admin-photo-placeholder');
+    const value = input.value.trim();
+    if (!value) {
+      image.removeAttribute('src');
+      image.hidden = true;
+      placeholder.hidden = false;
+      return;
+    }
+    try {
+      const resolved = new URL(value, new URL('../other/vehicle_list/', location.href));
+      if (!/^https?:$/.test(resolved.protocol)) throw new Error('Invalid image protocol');
+      image.src = resolved.href;
+      image.hidden = false;
+      placeholder.hidden = true;
+    } catch (error) {
+      image.removeAttribute('src');
+      image.hidden = true;
+      placeholder.hidden = false;
+    }
+  }
+
+  function photoCard(photo = {}, index = 0) {
+    const card = document.createElement('article');
+    card.className = 'admin-photo-card';
+    const preview = document.createElement('div');
+    preview.className = 'admin-photo-preview';
+    const image = document.createElement('img');
+    image.alt = `${t('photo')} ${index + 1}`;
+    image.hidden = true;
+    image.addEventListener('error', () => {
+      image.hidden = true;
+      card.querySelector('.admin-photo-placeholder').hidden = false;
+    });
+    const placeholder = document.createElement('span');
+    placeholder.className = 'admin-photo-placeholder';
+    placeholder.textContent = String(index + 1).padStart(2, '0');
+    preview.append(image, placeholder);
+
+    const fields = document.createElement('div');
+    fields.className = 'admin-photo-fields';
+    const imageField = photoField('img', 'imageUrl', photo.img, 'text');
+    imageField.classList.add('admin-field-wide');
+    fields.append(
+      imageField,
+      photoField('depot_ru', 'depotRu', photo.depot_ru),
+      photoField('depot_en', 'depotEn', photo.depot_en),
+      photoField('date', 'photoDate', photo.date),
+      photoField('author', 'photoAuthor', photo.author),
+      photoField('authorUrl', 'authorUrl', photo.authorUrl, 'url'),
+      photoField('event', 'photoEvent', photo.event)
+    );
+
+    const remove = button(t('removePhoto'), 'admin-danger-button admin-photo-remove', () => {
+      card.remove();
+      refreshPhotoEditorState();
+    });
+    remove.dataset.copy = 'removePhoto';
+    card.append(preview, fields, remove);
+    card.querySelector('[data-photo-key="img"]').addEventListener('input', () => updatePhotoPreview(card));
+    updatePhotoPreview(card);
+    return card;
+  }
+
+  function refreshPhotoEditorState() {
+    const list = byId('vehicle-photos-list');
+    if (!list) return;
+    list.querySelector('.admin-photo-empty')?.remove();
+    const cards = [...list.querySelectorAll('.admin-photo-card')];
+    cards.forEach((card, index) => {
+      card.querySelector('.admin-photo-placeholder').textContent = String(index + 1).padStart(2, '0');
+      card.querySelector('.admin-photo-preview img').alt = `${t('photo')} ${index + 1}`;
+    });
+    if (!cards.length) {
+      const empty = document.createElement('p');
+      empty.className = 'admin-photo-empty';
+      empty.dataset.copy = 'noPhotos';
+      empty.textContent = t('noPhotos');
+      list.append(empty);
+    }
+  }
+
+  function addPhoto(photo = {}) {
+    const list = byId('vehicle-photos-list');
+    if (!list) return;
+    list.querySelector('.admin-photo-empty')?.remove();
+    list.append(photoCard(photo, list.querySelectorAll('.admin-photo-card').length));
+    refreshPhotoEditorState();
+  }
+
+  function renderPhotoEditor(photos = []) {
+    const list = byId('vehicle-photos-list');
+    if (!list) return;
+    list.replaceChildren();
+    photos.forEach(photo => addPhoto(photo));
+    refreshPhotoEditorState();
+  }
+
+  function collectVehiclePhotos() {
+    return [...byId('vehicle-photos-list').querySelectorAll('.admin-photo-card')].map(card => {
+      const photo = {};
+      card.querySelectorAll('[data-photo-key]').forEach(input => { photo[input.dataset.photoKey] = input.value.trim(); });
+      if (!photo.img) throw new Error(t('invalidPhotoUrl'));
+      let resolved;
+      try { resolved = new URL(photo.img, new URL('../other/vehicle_list/', location.href)); } catch (error) { throw new Error(t('invalidPhotoUrl')); }
+      if (!/^https?:$/.test(resolved.protocol)) throw new Error(t('invalidPhotoUrl'));
+      if (photo.authorUrl) {
+        try {
+          const authorUrl = new URL(photo.authorUrl, location.href);
+          if (!/^https?:$/.test(authorUrl.protocol)) throw new Error('Invalid protocol');
+        } catch (error) { throw new Error(t('invalidPhotoUrl')); }
+      }
+      return photo;
+    });
+  }
+
   function openVehicle(vehicle = null) {
+    const title = byId('vehicle-dialog-title');
+    title.dataset.copy = vehicle ? 'editVehicleRecord' : 'addVehicleRecord';
+    title.textContent = t(title.dataset.copy);
     Object.entries(vehicleFieldIds).forEach(([key, id]) => {
       byId(id).value = vehicle?.[key] ?? (key === 'sortOrder' ? state.vehicleDatabase.vehicles.length : '');
     });
-    byId('vehicle-photos').value = JSON.stringify(vehicle?.photos || [], null, 2);
+    if (!vehicle && state.vehicleSectionFilter) byId('vehicle-section').value = state.vehicleSectionFilter;
+    renderPhotoEditor(vehicle?.photos || []);
+    setNotice('vehicle-dialog-notice', '', '');
     byId('vehicle-dialog').showModal();
   }
 
   async function saveVehicle() {
-    let photos = [];
-    const photosText = byId('vehicle-photos').value.trim();
-    if (photosText) {
-      photos = JSON.parse(photosText);
-      if (!Array.isArray(photos)) throw new Error('Photos JSON must be an array.');
+    const saveButton = byId('save-vehicle');
+    saveButton.disabled = true;
+    setNotice('vehicle-dialog-notice', t('loading'), '');
+    try {
+      const vehicle = {};
+      Object.entries(vehicleFieldIds).forEach(([key, id]) => {
+        vehicle[key] = key === 'sortOrder' ? Number(byId(id).value) || 0 : byId(id).value.trim();
+      });
+      vehicle.id = vehicle.id || vehicle.boardNumber;
+      vehicle.photos = collectVehiclePhotos();
+      await saveVehicleOperation({ action: 'upsertVehicle', vehicle });
+      byId('vehicle-dialog').close();
+    } finally {
+      saveButton.disabled = false;
     }
-    const vehicle = {};
-    Object.entries(vehicleFieldIds).forEach(([key, id]) => {
-      vehicle[key] = key === 'sortOrder' ? Number(byId(id).value) || 0 : byId(id).value.trim();
-    });
-    vehicle.id = vehicle.id || vehicle.boardNumber;
-    vehicle.photos = photos;
-    await saveVehicleOperation({ action: 'upsertVehicle', vehicle });
-    byId('vehicle-dialog').close();
   }
 
   async function deleteVehicle(vehicle) {
@@ -593,10 +789,21 @@
     byId('save-server-status').addEventListener('click', () => saveStatus().catch(error => setNotice('server-status-notice', error.message, 'error')));
     byId('new-section').addEventListener('click', () => openSection());
     byId('new-vehicle').addEventListener('click', () => openVehicle());
+    byId('vehicle-section-filter').addEventListener('change', event => {
+      state.vehicleSectionFilter = event.currentTarget.value;
+      renderVehicles();
+    });
+    byId('add-vehicle-photo').addEventListener('click', () => addPhoto());
     byId('import-vehicle-list').addEventListener('click', () => importCurrentVehicleList().catch(error => setNotice('vehicle-notice', error.message, 'error')));
     byId('decision-form').addEventListener('submit', event => { event.preventDefault(); submitDecision().catch(error => setNotice('admin-notice', error.message, 'error')); });
     byId('section-form').addEventListener('submit', event => { event.preventDefault(); saveSection().catch(error => setNotice('vehicle-notice', error.message, 'error')); });
-    byId('vehicle-form').addEventListener('submit', event => { event.preventDefault(); saveVehicle().catch(error => setNotice('vehicle-notice', error.message, 'error')); });
+    byId('vehicle-form').addEventListener('submit', event => {
+      event.preventDefault();
+      saveVehicle().catch(error => {
+        setNotice('vehicle-dialog-notice', error.message, 'error');
+        setNotice('vehicle-notice', error.message, 'error');
+      });
+    });
     document.querySelectorAll('.admin-dialog [value="cancel"]').forEach(control => {
       control.addEventListener('click', () => control.closest('dialog')?.close());
     });

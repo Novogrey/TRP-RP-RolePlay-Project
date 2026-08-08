@@ -17,6 +17,8 @@
       open: 'Open Discord publication', register: 'Register for shift', noRegistration: 'No advance registration is required for an RP session.',
       loading: 'Loading schedule...', failed: 'The schedule could not be loaded. Try again later.',
       formTitle: 'Shift registration', identifier: 'Employee identifier', check: 'Check data', show: 'Show identifier', hide: 'Hide identifier',
+      accountStep: 'Account verification', accountStepText: 'Confirm the employee identifier before selecting a position.',
+      registrationStep: 'Registration details', registrationStepText: 'Specify your position and the required shift information.',
       position: 'Position', choose: 'Select an option', vehicle: 'Trolleybus fleet number', vehicleHelp: 'Required only for a driver position.',
       additional: 'Additional information', submit: 'Confirm registration', account: 'Discord account', roblox: 'Roblox account', primaryPosition: 'Primary position',
       ready: 'Data verified. Complete the registration fields.', success: 'Registration completed.', close: 'Close'
@@ -27,6 +29,8 @@
       open: 'Открыть публикацию в Discord', register: 'Зарегистрироваться на смену', noRegistration: 'Предварительная регистрация на РП-сессию не требуется.',
       loading: 'Загрузка расписания...', failed: 'Не удалось загрузить расписание. Повторите попытку позднее.',
       formTitle: 'Регистрация на смену', identifier: 'Идентификатор работника', check: 'Проверить данные', show: 'Показать идентификатор', hide: 'Скрыть идентификатор',
+      accountStep: 'Проверка аккаунта', accountStepText: 'Подтвердите идентификатор работника перед выбором должности.',
+      registrationStep: 'Данные регистрации', registrationStepText: 'Укажите должность и необходимые сведения о смене.',
       position: 'Должность', choose: 'Выберите вариант', vehicle: 'Бортовой номер троллейбуса', vehicleHelp: 'Обязателен только для водительской должности.',
       additional: 'Дополнительная информация', submit: 'Подтвердить регистрацию', account: 'Аккаунт Discord', roblox: 'Аккаунт Roblox', primaryPosition: 'Основная должность',
       ready: 'Данные проверены. Заполните поля регистрации.', success: 'Регистрация выполнена.', close: 'Закрыть'
@@ -112,13 +116,27 @@
     state.selectedShift = code; state.profile = null;
     const dialog = registrationDialog();
     dialog.innerHTML = `<form id="trp-shift-registration-form" method="dialog">
-      <header><div><span>${escapeHtml(code)}</span><h2>${text.formTitle}</h2></div><button type="button" data-close aria-label="${text.close}">&#215;</button></header>
-      <label>${text.identifier}</label><div class="trp-registration-identifier"><input id="shift-worker-identifier" name="workerIdentifier" type="password" autocomplete="off" placeholder="TRP-RP-XXXX-XXXX-XXXX"><button type="button" data-toggle aria-label="${text.show}">&#9673;</button><button type="button" data-profile>${text.check}</button></div>
-      <div id="trp-shift-profile" class="trp-shift-profile" hidden></div>
-      <label>${text.position}<select id="shift-position" name="position" disabled><option value="">${text.choose}</option></select></label>
-      <label>${text.vehicle}<input id="shift-vehicle" name="vehicleNumber" type="text" disabled><small>${text.vehicleHelp}</small></label>
-      <label>${text.additional}<textarea id="shift-additional" name="additionalInfo" rows="3" maxlength="1000" disabled></textarea></label>
-      <div id="trp-shift-registration-status" class="trp-registration-status" hidden></div><button id="shift-register-submit" class="trp-registration-submit" type="submit" disabled>${text.submit}</button>
+      <header class="trp-registration-header">
+        <div><span class="trp-registration-code">${escapeHtml(code)}</span><h2>${text.formTitle}</h2></div>
+        <button class="trp-registration-close" type="button" data-close aria-label="${text.close}">&#215;</button>
+      </header>
+      <div class="trp-registration-body">
+        <section class="trp-registration-section" aria-labelledby="trp-account-step-title">
+          <div class="trp-registration-section-head"><span>01</span><div><h3 id="trp-account-step-title">${text.accountStep}</h3><p>${text.accountStepText}</p></div></div>
+          <label class="trp-registration-field" for="shift-worker-identifier"><span>${text.identifier}</span></label>
+          <div class="trp-registration-identifier"><input id="shift-worker-identifier" name="workerIdentifier" type="password" autocomplete="off" placeholder="TRP-RP-XXXX-XXXX-XXXX"><button type="button" data-toggle aria-label="${text.show}">&#9673;</button><button type="button" data-profile>${text.check}</button></div>
+          <div id="trp-shift-profile" class="trp-shift-profile" hidden></div>
+        </section>
+        <section class="trp-registration-section" aria-labelledby="trp-registration-step-title">
+          <div class="trp-registration-section-head"><span>02</span><div><h3 id="trp-registration-step-title">${text.registrationStep}</h3><p>${text.registrationStepText}</p></div></div>
+          <div class="trp-registration-grid">
+            <label class="trp-registration-field"><span>${text.position}</span><select id="shift-position" name="position" disabled><option value="">${text.choose}</option></select></label>
+            <label class="trp-registration-field"><span>${text.vehicle}</span><input id="shift-vehicle" name="vehicleNumber" type="text" disabled><small>${text.vehicleHelp}</small></label>
+            <label class="trp-registration-field trp-registration-field--wide"><span>${text.additional}</span><textarea id="shift-additional" name="additionalInfo" rows="3" maxlength="1000" disabled></textarea></label>
+          </div>
+        </section>
+      </div>
+      <footer class="trp-registration-footer"><div id="trp-shift-registration-status" class="trp-registration-status" hidden></div><button id="shift-register-submit" class="trp-registration-submit" type="submit" disabled>${text.submit}</button></footer>
     </form>`;
     const identifier = dialog.querySelector('#shift-worker-identifier');
     identifier.value = localStorage.getItem(identifierKey) || '';
@@ -190,26 +208,45 @@
     } catch (error) { root.innerHTML = `<p class="trp-calendar-error">${copy().failed}</p>`; }
   }
 
+  function handleCalendarClick(event) {
+    if (!event.target.closest('#trp-shift-calendar')) return;
+    const month = event.target.closest('[data-month]');
+    if (month) {
+      state.month = new Date(state.month.getFullYear(), state.month.getMonth() + Number(month.dataset.month), 1);
+      render();
+      return;
+    }
+    const date = event.target.closest('[data-date]');
+    if (date) {
+      state.selectedKey = date.dataset.date;
+      render();
+      return;
+    }
+    const register = event.target.closest('[data-register]');
+    if (register) renderRegistration(register.dataset.register);
+  }
+
   function mount() {
     const section = document.getElementById('calendar');
-    if (!section || document.getElementById('trp-shift-calendar')) return;
-    section.innerHTML = `<div class="container"><div class="section-header"><h2 class="section-title">${copy().title}</h2></div><div id="trp-shift-calendar" class="trp-shift-calendar"></div></div>`;
+    if (!section) return;
+    const existing = document.getElementById('trp-shift-calendar');
+    if (!existing) {
+      section.innerHTML = `<div class="container"><div class="section-header"><h2 class="section-title">${copy().title}</h2></div><div id="trp-shift-calendar" class="trp-shift-calendar"></div></div>`;
+    } else if (state.events.length) {
+      render();
+    }
     document.getElementById('register')?.remove();
-    section.addEventListener('click', event => {
-      const month = event.target.closest('[data-month]');
-      if (month) { state.month = new Date(state.month.getFullYear(), state.month.getMonth() + Number(month.dataset.month), 1); render(); return; }
-      const date = event.target.closest('[data-date]');
-      if (date) { state.selectedKey = date.dataset.date; render(); return; }
-      const register = event.target.closest('[data-register]');
-      if (register) renderRegistration(register.dataset.register);
-    });
-    load();
+    if (!existing) load();
   }
 
   if (!apiUrl) return;
   if (typeof window.reinitializeEventListeners === 'function') {
     const previous = window.reinitializeEventListeners;
     window.reinitializeEventListeners = function reinitializeShiftCalendar() { previous(); queueMicrotask(mount); };
+  }
+  if (!window.__trpShiftCalendarClickBound) {
+    window.__trpShiftCalendarClickBound = true;
+    document.addEventListener('click', handleCalendarClick);
   }
   mount();
 }());
