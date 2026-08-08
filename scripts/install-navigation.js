@@ -186,7 +186,7 @@
       loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/personnel-applications.css?v=20260808') })
     ]);
     if (!window.TRP_APPLICATIONS_API_URL) {
-      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
     await loadAsset('script', { src: siteUrl('scripts/personnel-applications.js?v=20260808') });
   }
@@ -199,24 +199,24 @@
       loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/first-class-exam.css?v=20260808') })
     ]);
     if (!window.TRP_APPLICATIONS_API_URL) {
-      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
     await loadAsset('script', { src: siteUrl('scripts/first-class-exam.js?v=20260808') });
   }
 
   async function loadShiftCalendarPage() {
     if (!/\/events\/(?:index\.html)?$/i.test(window.location.pathname)) return;
-    await loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/shift-calendar.css?v=20260808') });
+    await loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/shift-calendar.css?v=20260808b') });
     if (!window.TRP_APPLICATIONS_API_URL) {
-      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/shift-calendar.js?v=20260808') });
+    await loadAsset('script', { src: siteUrl('scripts/shift-calendar.js?v=20260808c') });
   }
 
   async function loadServerStatusIndicator() {
     if (!document.getElementById('server-button')) return;
     if (!window.TRP_APPLICATIONS_API_URL) {
-      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
     await loadAsset('script', { src: siteUrl('scripts/site-server-status.js?v=20260808') });
   }
@@ -224,9 +224,9 @@
   async function loadVehicleDatabasePage() {
     if (!/\/other\/vehicle_list\/(?:index\.html)?$/i.test(window.location.pathname)) return;
     if (!window.TRP_APPLICATIONS_API_URL) {
-      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260808') });
+    await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260808b') });
   }
 
   function boot() {

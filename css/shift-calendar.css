@@ -1,6 +1,83 @@
-.trp-shift-calendar{max-width:980px;margin:0 auto;border:1px solid var(--border-color);background:var(--card-bg);padding:20px;box-shadow:0 14px 36px rgba(0,0,0,.12)}
-.trp-calendar-toolbar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:12px;margin-bottom:16px}.trp-calendar-toolbar h3{text-align:center;text-transform:capitalize;color:var(--heading-color);font-size:1.2rem}.trp-calendar-toolbar button{width:44px;height:44px;border:1px solid var(--border-color);background:transparent;color:var(--text-color);font-size:1.7rem;cursor:pointer}.trp-calendar-toolbar button:hover{border-color:var(--accent-color);color:var(--accent-color)}
-.trp-calendar-weekdays,.trp-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.trp-calendar-weekdays{margin-bottom:6px;color:var(--text-light);font-size:.78rem;text-align:center;text-transform:uppercase}.trp-calendar-day{position:relative;aspect-ratio:1;min-height:54px;border:1px solid var(--border-color);background:transparent;color:var(--text-color);cursor:pointer;display:flex;align-items:flex-start;justify-content:flex-start;padding:9px;font:inherit}.trp-calendar-day--blank{border-color:transparent}.trp-calendar-day.has-events{border-color:var(--accent-color);background:color-mix(in srgb,var(--accent-color) 12%,transparent)}.trp-calendar-day.is-selected{outline:2px solid var(--accent-color);outline-offset:-2px}.trp-calendar-day small{position:absolute;right:7px;bottom:6px;min-width:20px;height:20px;display:grid;place-items:center;background:var(--accent-color);color:#fff;border-radius:50%;font-size:.7rem}
-.trp-calendar-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:20px}.trp-calendar-event{border-left:4px solid #5865f2;background:color-mix(in srgb,var(--bg-color) 70%,transparent);padding:16px}.trp-calendar-event--rp_session{border-left-color:#2d9d5b}.trp-calendar-event__head{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--heading-color)}.trp-calendar-event dl{display:grid;gap:7px}.trp-calendar-event dl div{display:flex;justify-content:space-between;gap:16px}.trp-calendar-event dt{color:var(--text-light)}.trp-calendar-event dd{text-align:right}.trp-calendar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}.trp-calendar-link,.trp-calendar-register{font:inherit;font-weight:700;text-decoration:none;color:var(--accent-color);border:0;background:transparent;padding:0;cursor:pointer}.trp-calendar-register{color:#fff;background:var(--accent-color);padding:9px 12px}.trp-calendar-caption{margin-top:12px;color:var(--text-light);font-size:.85rem}.trp-calendar-loading,.trp-calendar-error{padding:48px 20px;text-align:center}.trp-calendar-error{color:#d83c3e}
-.trp-shift-registration{width:min(720px,calc(100vw - 28px));max-height:calc(100vh - 28px);overflow:auto;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-color);padding:0;box-shadow:0 24px 80px rgba(0,0,0,.45)}.trp-shift-registration::backdrop{background:rgba(0,0,0,.72)}.trp-shift-registration form{display:grid;gap:14px;padding:22px}.trp-shift-registration header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border-color);padding-bottom:14px}.trp-shift-registration header span{color:var(--accent-color);font-size:.8rem}.trp-shift-registration header h2{color:var(--heading-color);font-size:1.25rem}.trp-shift-registration header button{border:0;background:transparent;color:var(--text-color);font-size:1.8rem;cursor:pointer}.trp-shift-registration label{display:grid;gap:7px;font-weight:700}.trp-shift-registration input,.trp-shift-registration select,.trp-shift-registration textarea{width:100%;border:1px solid var(--border-color);background:var(--bg-color);color:var(--text-color);padding:11px;font:inherit}.trp-shift-registration small{font-weight:400;color:var(--text-light)}.trp-registration-identifier{display:grid;grid-template-columns:1fr 44px auto;gap:8px}.trp-registration-identifier button,.trp-registration-submit{border:0;background:var(--accent-color);color:#fff;padding:11px 14px;font:inherit;font-weight:700;cursor:pointer}.trp-registration-identifier [data-toggle]{padding:0;background:transparent;color:var(--text-color);border:1px solid var(--border-color)}.trp-shift-profile{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border-color)}.trp-shift-profile div{padding:11px}.trp-shift-profile small,.trp-shift-profile strong{display:block}.trp-registration-status{padding:12px;border-left:3px solid var(--accent-color);background:color-mix(in srgb,var(--accent-color) 9%,transparent)}.trp-registration-status[data-type=error]{border-color:#d83c3e}.trp-registration-status[data-type=success]{border-color:#2d9d5b}.trp-registration-submit:disabled{opacity:.55;cursor:not-allowed}
-@media(max-width:640px){.trp-shift-calendar{padding:12px}.trp-calendar-weekdays,.trp-calendar-grid{gap:3px}.trp-calendar-day{min-height:42px;padding:6px;font-size:.85rem}.trp-calendar-day small{right:4px;bottom:4px}.trp-calendar-event dl div{display:block}.trp-calendar-event dd{text-align:left}.trp-registration-identifier{grid-template-columns:1fr 44px}.trp-registration-identifier [data-profile]{grid-column:1/-1}.trp-shift-profile{grid-template-columns:1fr}}
+.trp-shift-calendar { max-width: 980px; margin: 0 auto; padding: 20px; border: 1px solid var(--border-color); background: var(--card-bg); box-shadow: 0 14px 36px rgba(0, 0, 0, .12); }
+.trp-calendar-toolbar { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trp-calendar-toolbar h3 { color: var(--heading-color); font-size: 1.2rem; text-align: center; text-transform: capitalize; }
+.trp-calendar-toolbar button { width: 44px; height: 44px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 1.7rem; cursor: pointer; }
+.trp-calendar-toolbar button:hover { border-color: var(--accent-color); color: var(--accent-color); }
+.trp-calendar-weekdays, .trp-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.trp-calendar-weekdays { margin-bottom: 6px; color: var(--text-light); font-size: .78rem; text-align: center; text-transform: uppercase; }
+.trp-calendar-day { position: relative; display: flex; align-items: flex-start; justify-content: flex-start; min-height: 54px; padding: 9px; border: 1px solid var(--border-color); aspect-ratio: 1; background: transparent; color: var(--text-color); cursor: pointer; font: inherit; }
+.trp-calendar-day--blank { border-color: transparent; }
+.trp-calendar-day.has-events { border-color: var(--accent-color); background: color-mix(in srgb, var(--accent-color) 12%, transparent); }
+.trp-calendar-day.is-selected { outline: 2px solid var(--accent-color); outline-offset: -2px; }
+.trp-calendar-day small { position: absolute; right: 7px; bottom: 6px; display: grid; place-items: center; min-width: 20px; height: 20px; border-radius: 50%; background: var(--accent-color); color: #fff; font-size: .7rem; }
+.trp-calendar-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 20px; }
+.trp-calendar-event { padding: 16px; border-left: 4px solid #5865f2; background: color-mix(in srgb, var(--bg-color) 70%, transparent); }
+.trp-calendar-event--rp_session { border-left-color: #2d9d5b; }
+.trp-calendar-event__head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--heading-color); }
+.trp-calendar-event dl { display: grid; gap: 7px; }
+.trp-calendar-event dl div { display: flex; justify-content: space-between; gap: 16px; }
+.trp-calendar-event dt { color: var(--text-light); }
+.trp-calendar-event dd { text-align: right; }
+.trp-calendar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.trp-calendar-link, .trp-calendar-register { padding: 0; border: 0; background: transparent; color: var(--accent-color); cursor: pointer; font: inherit; font-weight: 700; text-decoration: none; }
+.trp-calendar-register { padding: 9px 12px; background: var(--accent-color); color: #fff; }
+.trp-calendar-caption { margin-top: 12px; color: var(--text-light); font-size: .85rem; }
+.trp-calendar-loading, .trp-calendar-error { padding: 48px 20px; text-align: center; }
+.trp-calendar-error { color: #d83c3e; }
+
+.trp-shift-registration { position: fixed; top: 50%; left: 50%; width: min(820px, calc(100vw - 32px)); max-width: none; max-height: min(860px, calc(100dvh - 32px)); margin: 0; padding: 0; overflow: hidden; transform: translate(-50%, -50%); border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-color); box-shadow: 0 28px 90px rgba(0, 0, 0, .52); }
+.trp-shift-registration::backdrop { background: rgba(7, 10, 14, .78); backdrop-filter: blur(4px); }
+.trp-shift-registration form { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: min(860px, calc(100dvh - 32px)); }
+.trp-registration-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 20px 22px; border-bottom: 1px solid var(--border-color); background: color-mix(in srgb, var(--card-bg) 92%, var(--accent-color) 8%); }
+.trp-registration-code { display: inline-block; margin-bottom: 5px; color: var(--accent-color); font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+.trp-registration-header h2 { margin: 0; color: var(--heading-color); font-size: 1.35rem; letter-spacing: 0; }
+.trp-registration-close { display: grid; flex: 0 0 38px; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-color); cursor: pointer; font: inherit; font-size: 1.45rem; line-height: 1; }
+.trp-registration-close:hover { border-color: var(--accent-color); color: var(--accent-color); }
+.trp-registration-body { display: grid; gap: 16px; padding: 20px 22px; overflow: auto; }
+.trp-registration-section { display: grid; gap: 14px; padding: 17px; border: 1px solid var(--border-color); background: color-mix(in srgb, var(--bg-color) 76%, transparent); }
+.trp-registration-section-head { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: start; gap: 11px; }
+.trp-registration-section-head > span { display: grid; place-items: center; width: 36px; height: 32px; border: 1px solid var(--accent-color); border-radius: 3px; color: var(--accent-color); font-size: .75rem; font-weight: 800; }
+.trp-registration-section-head h3 { margin: 0; color: var(--heading-color); font-size: 1rem; letter-spacing: 0; }
+.trp-registration-section-head p { margin: 3px 0 0; color: var(--text-light); font-size: .83rem; line-height: 1.45; }
+.trp-registration-field { display: grid; gap: 7px; min-width: 0; color: var(--heading-color); font-weight: 700; }
+.trp-registration-field span { font-size: .86rem; }
+.trp-shift-registration input, .trp-shift-registration select, .trp-shift-registration textarea { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; background: var(--card-bg); color: var(--text-color); font: inherit; letter-spacing: 0; }
+.trp-shift-registration input:focus, .trp-shift-registration select:focus, .trp-shift-registration textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 18%, transparent); }
+.trp-shift-registration input:disabled, .trp-shift-registration select:disabled, .trp-shift-registration textarea:disabled { cursor: not-allowed; opacity: .58; }
+.trp-shift-registration textarea { resize: vertical; }
+.trp-shift-registration small { color: var(--text-light); font-size: .77rem; font-weight: 400; line-height: 1.4; }
+.trp-registration-identifier { display: grid; grid-template-columns: minmax(0, 1fr) 44px auto; gap: 8px; }
+.trp-registration-identifier button, .trp-registration-submit { min-height: 44px; padding: 10px 15px; border: 0; border-radius: 4px; background: var(--accent-color); color: #fff; cursor: pointer; font: inherit; font-weight: 800; letter-spacing: 0; }
+.trp-registration-identifier [data-toggle] { padding: 0; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); }
+.trp-registration-identifier [data-toggle]:hover { border-color: var(--accent-color); color: var(--accent-color); }
+.trp-shift-profile { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--border-color); background: var(--border-color); gap: 1px; }
+.trp-shift-profile div { min-width: 0; padding: 11px; background: var(--card-bg); }
+.trp-shift-profile small, .trp-shift-profile strong { display: block; overflow-wrap: anywhere; }
+.trp-shift-profile strong { margin-top: 4px; color: var(--heading-color); font-size: .88rem; }
+.trp-registration-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.trp-registration-field--wide { grid-column: 1 / -1; }
+.trp-registration-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px 22px; border-top: 1px solid var(--border-color); background: color-mix(in srgb, var(--card-bg) 96%, #000 4%); }
+.trp-registration-status { padding: 10px 12px; border-left: 3px solid var(--accent-color); background: color-mix(in srgb, var(--accent-color) 9%, transparent); font-size: .84rem; line-height: 1.4; }
+.trp-registration-status[data-type="error"] { border-color: #d83c3e; }
+.trp-registration-status[data-type="success"] { border-color: #2d9d5b; }
+.trp-registration-submit { min-width: 210px; }
+.trp-registration-submit:disabled { cursor: not-allowed; opacity: .55; }
+
+@media (max-width: 640px) {
+  .trp-shift-calendar { padding: 12px; }
+  .trp-calendar-weekdays, .trp-calendar-grid { gap: 3px; }
+  .trp-calendar-day { min-height: 42px; padding: 6px; font-size: .85rem; }
+  .trp-calendar-day small { right: 4px; bottom: 4px; }
+  .trp-calendar-event dl div { display: block; }
+  .trp-calendar-event dd { text-align: left; }
+  .trp-shift-registration { width: calc(100vw - 18px); max-height: calc(100dvh - 18px); }
+  .trp-shift-registration form { max-height: calc(100dvh - 18px); }
+  .trp-registration-header, .trp-registration-body, .trp-registration-footer { padding-right: 14px; padding-left: 14px; }
+  .trp-registration-section { padding: 14px; }
+  .trp-registration-identifier { grid-template-columns: minmax(0, 1fr) 44px; }
+  .trp-registration-identifier [data-profile] { grid-column: 1 / -1; }
+  .trp-shift-profile, .trp-registration-grid { grid-template-columns: 1fr; }
+  .trp-registration-field--wide { grid-column: auto; }
+  .trp-registration-footer { grid-template-columns: 1fr; }
+  .trp-registration-submit { width: 100%; min-width: 0; }
+}
