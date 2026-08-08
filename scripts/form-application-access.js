@@ -22,12 +22,13 @@ function formatApplicationAccessMessage(message) {
 }
 
 window.TrpApplicationAccess = Object.freeze({
-  formatMessage: formatApplicationAccessMessage
+  formatMessage: formatApplicationAccessMessage,
+  render: renderApplicationAccessNotice
 });
 
-function initApplicationAccessNotice() {
+function currentApplicationPage() {
   const path = window.location.pathname.toLowerCase();
-  const page = path.includes("/applications/exam/")
+  return path.includes("/applications/exam/")
     ? { action: "config", scopes: ["private_exam", "training"], statusId: "application-status", lookupId: "lookup-profile" }
     : path.includes("/applications/vacation_&_sick/")
       ? { action: "administrative-config", formType: "vacation", scopes: ["vacation", "early_return"], statusId: "application-status", lookupId: "lookup-profile" }
@@ -38,6 +39,43 @@ function initApplicationAccessNotice() {
           : path.includes("/applications/trolleybus_repair/")
             ? { action: "repair-config", scopes: ["repair_service"], statusId: "repair-application-status", lookupId: "lookup-repair-profile" }
             : null;
+}
+
+function accessNotice(page) {
+  if (!page) return null;
+  const id = `${page.statusId}-access`;
+  const existing = document.getElementById(id);
+  if (existing) return existing;
+  const transientStatus = document.getElementById(page.statusId);
+  if (!transientStatus?.parentNode) return null;
+  const notice = document.createElement("div");
+  notice.id = id;
+  notice.hidden = true;
+  notice.className = "application-status error";
+  notice.setAttribute("role", "alert");
+  transientStatus.parentNode.insertBefore(notice, transientStatus);
+  return notice;
+}
+
+function renderApplicationAccessNotice(access, options = {}) {
+  const page = currentApplicationPage();
+  if (!page) return [];
+  const language = localStorage.getItem("language") === "en" ? "en" : "ru";
+  const unavailable = page.scopes.map((scope) => access?.[scope]).filter((entry) => entry && !entry.allowed);
+  const notice = accessNotice(page);
+  if (notice) {
+    notice.hidden = unavailable.length === 0;
+    notice.textContent = unavailable.map((entry) => formatApplicationAccessMessage(entry.message)).join("\n\n");
+  }
+  if (options.lockLookup && unavailable.length === page.scopes.length) {
+    const lookup = document.getElementById(page.lookupId);
+    if (lookup) lookup.disabled = true;
+  }
+  return unavailable;
+}
+
+function initApplicationAccessNotice() {
+  const page = currentApplicationPage();
   if (!page) return;
 
   const apiBase = String(
@@ -56,25 +94,7 @@ function initApplicationAccessNotice() {
     .then((response) => response.json())
     .then((result) => {
       if (!result?.ok) return;
-      const access = result.config?.applicationAccess || {};
-      const unavailable = page.scopes.map((scope) => access[scope]).filter((entry) => entry && !entry.allowed);
-      if (!unavailable.length) return;
-      const status = document.getElementById(page.statusId);
-      if (status) {
-        status.hidden = false;
-        status.className = "application-status error";
-        status.textContent = unavailable.map((entry) => {
-          const label = entry.label || entry.scope;
-          const reason = entry.reason || (language === "ru" ? "Причина не указана." : "No reason was provided.");
-          return language === "ru"
-            ? `Приём заявлений «${label}» закрыт. Причина: ${reason}`
-            : `“${label}” applications are closed. Reason: ${reason}`;
-        }).join("\n\n");
-      }
-      if (unavailable.length === page.scopes.length) {
-        const lookup = document.getElementById(page.lookupId);
-        if (lookup) lookup.disabled = true;
-      }
+      renderApplicationAccessNotice(result.config?.applicationAccess || {}, { lockLookup: true });
     })
     .catch(() => null);
 }

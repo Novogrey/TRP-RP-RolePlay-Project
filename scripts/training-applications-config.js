@@ -1,7 +1,7 @@
 window.TRP_APPLICATIONS_API_URL =
   window.TRP_APPLICATIONS_API_URL ||
   window.TRP_TRAINING_APPLICATIONS_API_URL ||
-  "https://script.google.com/macros/s/AKfycbw0ImoNs0uVAIvcSzAYZIIg14neJPyW6OfX8ZFeWSVtA7eGFN-iCHVtZl-RsTeujzx6/exec";
+  "https://script.google.com/macros/s/AKfycbz_ip5PWgkQCkH1v8FFzmy2iMVZynKgHbKnwHPdVOTuGWGhEqPqdKT0dbzzmKDL6wl3/exec";
 
 window.TRP_TRAINING_APPLICATIONS_API_URL =
   window.TRP_TRAINING_APPLICATIONS_API_URL ||

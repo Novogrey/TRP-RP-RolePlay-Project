@@ -1,5 +1,24 @@
 window.TRP_SITE_ANNOUNCEMENTS = [
   {
+    id: "server-editor-data-export-warning",
+    version: 1,
+    enabled: true,
+    type: "warning",
+    paths: "all",
+    collapsible: true,
+    startCollapsed: false,
+    startsAtUtc: "2026-08-08 00:00",
+    endsAtUtc: "2026-09-08 23:59",
+    title: {
+      ru: "Внимание: сохраните данные серверных редакторов",
+      en: "Important: export your server editor data"
+    },
+    body: {
+      ru: "<p>Перед переходом на обновлённые редакторы скачайте все созданные на сервере JSON-файлы. Несохранённые данные серверных сессий редакторов не переносятся и после завершения сессии будут удалены без возможности восстановления.</p>",
+      en: "<p>Before switching to the updated editors, download every JSON file created in a server editor. Unsaved server editor session data is not transferred and will be permanently deleted after the session ends.</p>"
+    }
+  },
+  {
     id: "trp-rp-systems-installation",
     version: 2,
     enabled: true,
