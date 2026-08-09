@@ -116,6 +116,7 @@
       list.className = 'dropdown-submenu-list';
       const entries = [
         ['admin/#applications', 'Заявления', 'Applications'],
+        ['admin/#shifts', 'Смены и РП-сессии', 'Shifts and RP sessions'],
         ['admin/#server-status', 'Статус сервера', 'Server status'],
         ['admin/#vehicles', 'Автотранспорт', 'Vehicles']
       ];
@@ -218,7 +219,7 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/site-server-status.js?v=20260808') });
+    await loadAsset('script', { src: siteUrl('scripts/site-server-status.js?v=20260809a') });
   }
 
   async function loadVehicleDatabasePage() {
