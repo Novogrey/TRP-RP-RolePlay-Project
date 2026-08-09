@@ -42,7 +42,8 @@
       vehicleInformation: 'Информация и код', vehicleInformationText: 'Тексты для обеих языковых версий и служебный код.',
       photosHelp: 'Добавьте прямую ссылку на изображение и данные для подписи.', addPhoto: 'Добавить фотографию',
       photo: 'Фотография', imageUrl: 'URL изображения', depotRu: 'Депо (RU)', depotEn: 'Депо (EN)', photoDate: 'Дата',
-      photoAuthor: 'Автор', authorUrl: 'Ссылка на автора', photoEvent: 'Событие или подпись', removePhoto: 'Удалить',
+      photoAuthor: 'Автор', authorUrl: 'Ссылка на автора', photoEventRu: 'Событие или подпись (RU)',
+      photoEventEn: 'Событие или подпись (EN)', removePhoto: 'Удалить',
       noPhotos: 'Фотографии не добавлены.', invalidPhotoUrl: 'Укажите корректную ссылку на изображение.',
       nameEn: 'Название (EN)', loading: 'Проверяем доступ к разделам...', ready: 'Доступ проверен.', invalidId: 'Укажите идентификатор формата TRP-RP-XXXX-XXXX-XXXX.',
       requestFailed: 'Не удалось выполнить запрос.', noApplications: 'Открытых заявлений для ваших ролей нет.',
@@ -94,7 +95,8 @@
       vehicleInformation: 'Information and code', vehicleInformationText: 'Text for both language versions and the service code.',
       photosHelp: 'Add a direct image URL and the information displayed with it.', addPhoto: 'Add photo',
       photo: 'Photo', imageUrl: 'Image URL', depotRu: 'Depot (RU)', depotEn: 'Depot (EN)', photoDate: 'Date',
-      photoAuthor: 'Author', authorUrl: 'Author URL', photoEvent: 'Event or caption', removePhoto: 'Remove',
+      photoAuthor: 'Author', authorUrl: 'Author URL', photoEventRu: 'Event or caption (RU)',
+      photoEventEn: 'Event or caption (EN)', removePhoto: 'Remove',
       noPhotos: 'No photos added.', invalidPhotoUrl: 'Enter a valid image URL.', loading: 'Checking section access...',
       ready: 'Access check completed.', invalidId: 'Enter an identifier in the TRP-RP-XXXX-XXXX-XXXX format.',
       requestFailed: 'The request could not be completed.', noApplications: 'There are no open applications for your roles.',
@@ -1000,7 +1002,8 @@
       photoField('date', 'photoDate', photo.date),
       photoField('author', 'photoAuthor', photo.author),
       photoField('authorUrl', 'authorUrl', photo.authorUrl, 'url'),
-      photoField('event', 'photoEvent', photo.event)
+      photoField('event_ru', 'photoEventRu', photo.event_ru || photo.event),
+      photoField('event_en', 'photoEventEn', photo.event_en)
     );
 
     const remove = button(t('removePhoto'), 'admin-danger-button admin-photo-remove', () => {

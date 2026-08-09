@@ -466,7 +466,10 @@
         }
         meta.append(authorRow);
       }
-      if (photo.event) meta.append(element('div', 'tbus-photo-event', photo.event));
+      const event = language() === 'en'
+        ? photo.event_en || photo.event_ru || photo.event
+        : photo.event_ru || photo.event || photo.event_en;
+      if (event) meta.append(element('div', 'tbus-photo-event', event));
       card.append(imageWrap, meta);
       list.append(card);
     });
