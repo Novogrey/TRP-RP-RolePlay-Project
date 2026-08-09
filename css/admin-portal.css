@@ -156,3 +156,28 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   .admin-dialog-actions--sticky { flex-wrap: wrap; }
   .admin-dialog-actions--sticky .admin-notice { flex-basis: 100%; }
 }
+
+@keyframes adminDialogIn {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 18px)) scale(.98); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes adminBackdropIn {
+  from { background: rgba(5, 8, 12, 0); backdrop-filter: blur(0); }
+  to { background: rgba(5, 8, 12, .78); backdrop-filter: blur(4px); }
+}
+
+.admin-dialog[open] {
+  animation: adminDialogIn .28s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.admin-dialog[open]::backdrop {
+  animation: adminBackdropIn .22s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-dialog[open],
+  .admin-dialog[open]::backdrop {
+    animation: none !important;
+  }
+}

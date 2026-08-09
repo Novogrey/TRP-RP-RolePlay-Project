@@ -9,6 +9,19 @@
   'use strict';
 
   const slots = Array.from({ length: 15 }, (_, index) => `Slot_${index + 1}`);
+  const models = Object.freeze([
+    'ZiU-682 (ZiU-9)',
+    'ZiU-6205 (ZiU-10)',
+    'ZiU-682 (ZiU-9) EMU',
+    'ZiU-682 (ZiU-9) Service vehicle',
+    '(TrP Classic port) Tatra T6B5 (T3M)',
+    '(TrP Classic port) Tatra T6B5 (T3M) EMU',
+    'Boat',
+    'VAZ-2109 Sputnik',
+    '(NonRP) Tow Scooter',
+    '(NonRP) Tow ScooterHeavy',
+    '(EmptyBase) Monorail'
+  ]);
   const liveries = Object.freeze({
     'ZiU-682 (ZiU-9)': Object.freeze([
       'AdLivery1', 'AdLivery3', 'AdLivery4', 'Athens', 'Bogota', 'Budapest', 'Cheboksary',
@@ -51,8 +64,8 @@
   }
 
   function getModels() {
-    return Object.keys(liveries);
+    return [...models];
   }
 
-  return Object.freeze({ liveries, editorModel, getLiveries, getModels });
+  return Object.freeze({ models, liveries, editorModel, getLiveries, getModels });
 }));
