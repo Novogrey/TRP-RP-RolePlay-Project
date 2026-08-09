@@ -134,6 +134,7 @@
         ['admin/#applications', 'Заявления', 'Applications'],
         ['admin/#shifts', 'Смены и РП-сессии', 'Shifts and RP sessions'],
         ['admin/#server-status', 'Статус сервера', 'Server status'],
+        ['admin/#announcements', 'Уведомления', 'Announcements'],
         ['admin/#vehicles', 'Автотранспорт', 'Vehicles']
       ];
       for (const [href, ru, en] of entries) {

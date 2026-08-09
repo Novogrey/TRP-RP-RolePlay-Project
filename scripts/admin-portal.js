@@ -184,6 +184,9 @@
     renderShifts();
     renderStatus();
     renderVehicles();
+    window.dispatchEvent(new CustomEvent('trp-admin-language-change', {
+      detail: { language: state.language }
+    }));
   }
 
   async function syncSiteShell() {
@@ -1165,6 +1168,9 @@
     byId('admin-account').hidden = false;
     byId('admin-account-name').textContent = maskIdentifier(identifier);
     setNotice('admin-notice', t('ready'), 'success');
+    window.dispatchEvent(new CustomEvent('trp-admin-authenticated', {
+      detail: { identifier, language: state.language }
+    }));
   }
 
   function bind() {
