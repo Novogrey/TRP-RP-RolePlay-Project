@@ -397,6 +397,25 @@
       : modalCopy().noData;
   }
 
+  function formatVehicleDate(value) {
+    const raw = String(value == null ? '' : value).trim();
+    if (!raw || /^\d{4}$/.test(raw)) return raw;
+
+    const dayFirst = raw.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (dayFirst) {
+      return `${dayFirst[1].padStart(2, '0')}.${dayFirst[2].padStart(2, '0')}.${dayFirst[3]}`;
+    }
+
+    const yearFirst = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/);
+    if (yearFirst) return `${yearFirst[3]}.${yearFirst[2]}.${yearFirst[1]}`;
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    const day = String(parsed.getDate()).padStart(2, '0');
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    return `${day}.${month}.${parsed.getFullYear()}`;
+  }
+
   function resolvePhotoUrl(value) {
     try {
       const url = new URL(String(value || '').trim(), window.location.href);
@@ -471,8 +490,8 @@
     setModalValue('modalDepot', vehicleSectionPath(vehicle, lang));
     setModalValue('modalModel', vehicle.model);
     setModalValue('modalFactoryNumber', vehicle.factoryNumber);
-    setModalValue('modalBuilt', vehicle.built);
-    setModalValue('modalArrived', vehicle.arrived);
+    setModalValue('modalBuilt', formatVehicleDate(vehicle.built));
+    setModalValue('modalArrived', formatVehicleDate(vehicle.arrived));
     setModalValue('modalAssignment', lang === 'en' ? vehicle.assignmentEn || vehicle.assignmentRu : vehicle.assignmentRu || vehicle.assignmentEn);
     setModalValue('modalLivery', vehicle.livery);
     setModalValue('modalInfo', lang === 'en' ? vehicle.informationEn || vehicle.informationRu : vehicle.informationRu || vehicle.informationEn);

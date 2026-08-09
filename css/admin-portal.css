@@ -131,6 +131,22 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-pagination { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; }
 .admin-dialog-lead { margin: 0 0 18px; padding: 12px; border-left: 3px solid var(--admin-primary); background: var(--admin-surface-2); color: var(--admin-muted); }
 .admin-form-help { margin: 0; color: var(--admin-muted); font-size: 12px; line-height: 1.5; }
+.admin-announcement-summary { margin-bottom: 14px; color: var(--admin-muted); font-size: 13px; font-weight: 750; }
+.admin-announcement-row { display: grid; gap: 13px; padding: 18px; border: 1px solid var(--admin-border); border-left: 4px solid var(--admin-primary); background: var(--admin-surface); }
+.admin-announcement-row.is-warning { border-left-color: #d99020; }
+.admin-announcement-row.is-danger, .admin-announcement-row.is-expired { border-left-color: var(--admin-danger); }
+.admin-announcement-row.is-disabled { border-left-color: var(--admin-muted); opacity: .78; }
+.admin-announcement-preview { display: -webkit-box; margin: 0; overflow: hidden; color: var(--admin-muted); line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.admin-announcement-meta { display: flex; gap: 10px 22px; flex-wrap: wrap; color: var(--admin-muted); font-size: 12px; }
+.admin-announcement-meta strong { color: var(--admin-text); }
+.admin-announcement-status { flex: 0 0 auto; padding: 6px 9px; border: 1px solid currentColor; border-radius: 3px; color: var(--admin-success); font-size: 11px; font-weight: 850; text-transform: uppercase; }
+.admin-announcement-status.is-scheduled { color: var(--admin-primary); }
+.admin-announcement-status.is-expired, .admin-announcement-status.is-disabled { color: var(--admin-muted); }
+.admin-toggle-field { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 10px; min-width: 0; padding: 11px 12px; border: 1px solid var(--admin-border); border-radius: 4px; background: var(--admin-surface); cursor: pointer; }
+.admin-toggle-field input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--admin-primary); }
+.admin-toggle-field span { display: grid; gap: 3px; }
+.admin-toggle-field strong { font-size: 13px; }
+.admin-toggle-field small { color: var(--admin-muted); font-size: 11px; font-weight: 500; line-height: 1.4; }
 
 @media (max-width: 760px) {
   .admin-main { width: min(100% - 20px, 1180px); padding-top: 96px; }
@@ -155,6 +171,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   .admin-photo-fields .admin-field-wide { grid-column: auto; }
   .admin-dialog-actions--sticky { flex-wrap: wrap; }
   .admin-dialog-actions--sticky .admin-notice { flex-basis: 100%; }
+  .admin-announcement-status { align-self: flex-start; }
 }
 
 @keyframes adminDialogIn {
