@@ -489,7 +489,7 @@
       copyButton.dataset.code = String(vehicle.code || '').trim();
       copyButton.disabled = !copyButton.dataset.code;
     }
-    ['modalInfo', 'modalDrivers', 'modalCode'].forEach(id => {
+    ['modalLivery', 'modalInfo', 'modalDrivers', 'modalCode'].forEach(id => {
       document.getElementById(id)?.closest('.tbus-info-row')?.classList.add('tbus-info-row--wide');
     });
     document.querySelectorAll('#tbusModal .tbus-info-row').forEach((row, index) => {
