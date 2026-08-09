@@ -82,11 +82,14 @@
       ...(root.querySelectorAll?.(selector) || [])
     ];
     for (const input of inputs) {
-      if (input.dataset.workerIdentifierStorage === 'true') continue;
-      input.dataset.workerIdentifierStorage = 'true';
       let saved = '';
       try { saved = localStorage.getItem(WORKER_IDENTIFIER_KEY) || ''; } catch (error) { saved = ''; }
-      if (!input.value && saved) input.value = saved;
+      const normalizedSaved = String(saved).trim().toUpperCase();
+      if (!input.value && /^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(normalizedSaved)) {
+        input.value = normalizedSaved;
+      }
+      if (input.dataset.workerIdentifierStorage === 'true') continue;
+      input.dataset.workerIdentifierStorage = 'true';
       const persist = () => {
         const value = String(input.value || '').trim().toUpperCase();
         if (!/^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(value)) return;
@@ -240,7 +243,7 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-      await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260809b') });
+      await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260809c') });
   }
 
   function boot() {
@@ -272,7 +275,11 @@
     if (!event.target.closest('#lang-btn')) return;
     window.setTimeout(syncLabels, 0);
     window.setTimeout(syncLabels, 500);
+    [0, 100, 500, 1000].forEach((delay) => {
+      window.setTimeout(() => bindWorkerIdentifierStorage(), delay);
+    });
   });
+  window.addEventListener('pageshow', () => bindWorkerIdentifierStorage());
   window.TrpInstallNavigation = { sync: syncLabels, boot, bindWorkerIdentifierStorage };
   if (document.body) {
     new MutationObserver((records) => {

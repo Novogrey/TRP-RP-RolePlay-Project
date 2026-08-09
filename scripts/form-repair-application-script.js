@@ -417,6 +417,7 @@ function initRepairApplicationForm() {
   }
 
   const identifier = byId("worker-identifier");
+  window.TrpInstallNavigation?.bindWorkerIdentifierStorage(identifier);
   const toggle = byId("toggle-worker-identifier");
   function setIdentifierVisible(visible) {
     identifier.type = visible ? "text" : "password";

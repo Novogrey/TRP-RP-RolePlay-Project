@@ -655,6 +655,18 @@
     return state.language === 'ru' ? section.nameRu : section.nameEn;
   }
 
+  function vehicleSectionPath(section, sectionsById) {
+    const names = [];
+    const visited = new Set();
+    let current = section;
+    while (current && !visited.has(current.id)) {
+      visited.add(current.id);
+      names.unshift(vehicleSectionLabel(current));
+      current = sectionsById.get(current.parentId);
+    }
+    return names.join(' / ');
+  }
+
   function vehicleSectionFilterIds(sectionId, sections) {
     if (!sectionId) return null;
     const result = new Set([sectionId]);
@@ -695,6 +707,7 @@
     orderedSections.forEach(({ section, depth }) => {
       const row = document.createElement('div');
       row.className = 'admin-section-row';
+      row.style.setProperty('--section-depth', String(Math.min(depth, 12)));
       row.classList.toggle('is-child', depth > 0);
       row.classList.toggle('is-category', childParentIds.has(section.id));
       row.classList.toggle('is-active', state.vehicleSectionFilter === section.id);
@@ -749,9 +762,7 @@
     }
     const sectionsById = new Map(sections.map(section => [section.id, section]));
     const sectionMap = new Map(sections.map(section => {
-      const parent = sectionsById.get(section.parentId);
-      const name = vehicleSectionLabel(section);
-      return [section.id, parent ? `${vehicleSectionLabel(parent)} / ${name}` : name];
+      return [section.id, vehicleSectionPath(section, sectionsById)];
     }));
     vehicles.forEach(vehicle => {
       const row = document.createElement('article');
@@ -804,14 +815,15 @@
     emptyParent.value = '';
     emptyParent.textContent = t('rootCategory');
     parentSelect.append(emptyParent);
-    const hasChildren = Boolean(section && state.vehicleDatabase.sections.some(entry => entry.parentId === section.id));
-    state.vehicleDatabase.sections
-      .filter(entry => !entry.parentId && entry.id !== section?.id)
-      .sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder))
-      .forEach(entry => {
+    const sections = state.vehicleDatabase.sections;
+    const excludedParentIds = section ? vehicleSectionFilterIds(section.id, sections) : new Set();
+    orderedVehicleSections(sections)
+      .filter(({ section: entry }) => !excludedParentIds.has(entry.id))
+      .forEach(({ section: entry, depth }) => {
         const option = document.createElement('option');
         option.value = entry.id;
-        option.textContent = vehicleSectionLabel(entry);
+        const visibleDepth = Math.min(depth, 10);
+        option.textContent = `${'— '.repeat(visibleDepth)}${depth > visibleDepth ? '… ' : ''}${vehicleSectionLabel(entry)}`;
         option.disabled = state.vehicleDatabase.vehicles.some(vehicle => vehicle.sectionId === entry.id);
         parentSelect.append(option);
       });
@@ -821,7 +833,7 @@
     byId('section-name-en').value = section?.nameEn || '';
     byId('section-order').value = section?.sortOrder ?? state.vehicleDatabase.sections.length;
     parentSelect.value = section?.parentId || '';
-    parentSelect.disabled = hasChildren;
+    parentSelect.disabled = false;
     byId('section-dialog').showModal();
   }
 

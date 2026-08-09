@@ -3,7 +3,8 @@
 
   const api = String(window.TRP_APPLICATIONS_API_URL || '').trim();
   const registrationPath = '../../forms/applications/registration_&_replacement/';
-  const collapsedGroups = new Set();
+  const collapsedGroupsKey = 'trp-rp-vehicle-list-collapsed';
+  const collapsedGroups = loadCollapsedGroups();
   let collapseControlId = 0;
   const statusCopy = Object.freeze({
     'Эксплуатируется': 'In service',
@@ -20,6 +21,23 @@
 
   function container() {
     return document.querySelector('.tables-section .container');
+  }
+
+  function loadCollapsedGroups() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(collapsedGroupsKey) || '[]');
+      return new Set(Array.isArray(stored) ? stored.map(String) : []);
+    } catch (error) {
+      return new Set();
+    }
+  }
+
+  function persistCollapsedGroups() {
+    try {
+      localStorage.setItem(collapsedGroupsKey, JSON.stringify([...collapsedGroups]));
+    } catch (error) {
+      // The list remains usable when browser storage is unavailable.
+    }
   }
 
   if (!api || !container()) return;
@@ -136,6 +154,7 @@
       toggle.setAttribute('aria-expanded', String(!nextCollapsed));
       if (nextCollapsed) collapsedGroups.add(key);
       else collapsedGroups.delete(key);
+      persistCollapsedGroups();
     });
     heading.append(toggle);
     return heading;
@@ -213,30 +232,42 @@
     return block;
   }
 
-  function categoryBlock(category, childSections, vehicles, lang) {
-    const categoryVehicles = vehicles
-      .filter(vehicle => vehicle.sectionId === category.id)
-      .sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder));
-    const populatedChildren = childSections.map(section => ({
-      section,
-      vehicles: vehicles
-        .filter(vehicle => vehicle.sectionId === section.id)
-        .sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder))
-    })).filter(entry => entry.vehicles.length);
-    if (!categoryVehicles.length && !populatedChildren.length) return null;
+  function categoryBlock(category, childrenByParent, vehiclesBySection, lang, ancestors, rendered) {
+    if (ancestors.has(category.id)) return null;
+    rendered.add(category.id);
+    const childSections = childrenByParent.get(category.id) || [];
+    const categoryVehicles = vehiclesBySection.get(category.id) || [];
+    if (!childSections.length) {
+      return categoryVehicles.length ? tableBlock(category, categoryVehicles, lang) : null;
+    }
+
+    const nextAncestors = new Set(ancestors);
+    nextAncestors.add(category.id);
+    const childBlocks = childSections
+      .map(section => categoryBlock(
+        section,
+        childrenByParent,
+        vehiclesBySection,
+        lang,
+        nextAncestors,
+        rendered
+      ))
+      .filter(Boolean);
+    if (!categoryVehicles.length && !childBlocks.length) return null;
 
     const group = element('section', 'vehicle-category');
     group.dataset.vehicleCategory = category.id;
+    group.style.setProperty('--vehicle-category-depth', String(Math.min(ancestors.size, 12)));
     const content = element('div', 'vehicle-category-sections');
     group.append(collapsibleHeading(
       lang === 'ru' ? category.nameRu : category.nameEn,
       content,
-      `category:${category.id}`,
+      `section:${category.id}`,
       'vehicle-category-title',
       group
     ));
     if (categoryVehicles.length) content.append(tableBlock(category, categoryVehicles, lang, true));
-    populatedChildren.forEach(entry => content.append(tableBlock(entry.section, entry.vehicles, lang)));
+    childBlocks.forEach(block => content.append(block));
     group.append(content);
     return group;
   }
@@ -256,18 +287,47 @@
     const lang = language();
     const sortedSections = [...sections].sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder));
     const sectionIds = new Set(sortedSections.map(section => section.id));
-    const roots = sortedSections.filter(section => !section.parentId || !sectionIds.has(section.parentId));
-    roots.forEach(section => {
-      const children = sortedSections.filter(entry => entry.parentId === section.id);
-      if (children.length) {
-        const group = categoryBlock(section, children, vehicles, lang);
-        if (group) target.append(group);
-        return;
+    const childrenByParent = new Map();
+    sortedSections.forEach(section => {
+      const parentId = section.parentId !== section.id && sectionIds.has(section.parentId)
+        ? section.parentId
+        : '';
+      if (!childrenByParent.has(parentId)) childrenByParent.set(parentId, []);
+      childrenByParent.get(parentId).push(section);
+    });
+    const vehiclesBySection = new Map();
+    vehicles.forEach(vehicle => {
+      if (!vehiclesBySection.has(vehicle.sectionId)) vehiclesBySection.set(vehicle.sectionId, []);
+      vehiclesBySection.get(vehicle.sectionId).push(vehicle);
+    });
+    vehiclesBySection.forEach(entries => {
+      entries.sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder));
+    });
+    const validCollapseKeys = new Set(sortedSections.map(section => `section:${section.id}`));
+    let collapseStateChanged = false;
+    collapsedGroups.forEach(key => {
+      if (!validCollapseKeys.has(key)) {
+        collapsedGroups.delete(key);
+        collapseStateChanged = true;
       }
-      const sectionVehicles = vehicles
-        .filter(vehicle => vehicle.sectionId === section.id)
-        .sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder));
-      if (sectionVehicles.length) target.append(tableBlock(section, sectionVehicles, lang));
+    });
+    if (collapseStateChanged) persistCollapsedGroups();
+
+    const rendered = new Set();
+    const appendSection = section => {
+      const block = categoryBlock(
+        section,
+        childrenByParent,
+        vehiclesBySection,
+        lang,
+        new Set(),
+        rendered
+      );
+      if (block) target.append(block);
+    };
+    (childrenByParent.get('') || []).forEach(appendSection);
+    sortedSections.forEach(section => {
+      if (!rendered.has(section.id)) appendSection(section);
     });
     window.dispatchEvent(new CustomEvent('trp-vehicle-database-rendered', { detail: window.TRPVehicleDatabase }));
     scheduleLocalizedStatusUi();
