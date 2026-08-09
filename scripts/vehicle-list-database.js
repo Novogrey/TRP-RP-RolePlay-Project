@@ -108,14 +108,27 @@
   }
 
   function assignedDriverCount(value) {
-    if (Array.isArray(value)) return new Set(value.map(String).map(entry => entry.trim()).filter(Boolean)).size;
-    const normalized = String(value || '').trim();
-    if (!normalized || ['-', '—', 'нет', 'none', 'no data'].includes(normalized.toLowerCase())) return 0;
-    return new Set(normalized.split(/[,;|\n]+/).map(entry => entry.trim()).filter(Boolean)).size;
+    let entries = Array.isArray(value) ? value : null;
+    if (!entries) {
+      const normalized = String(value || '').trim();
+      if (!normalized) return 0;
+      if (normalized.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(normalized);
+          if (Array.isArray(parsed)) entries = parsed;
+        } catch (error) {
+          // Fall back to the spreadsheet delimiter format.
+        }
+      }
+      if (!entries) entries = normalized.split(/[,;|\n]+/);
+    }
+    const unavailable = /^(?:-|—|нет|none|no data|not assigned|assignment unavailable|закрепление невозможно|не закреплен[оы]?)$/i;
+    return new Set(entries.map(String).map(entry => entry.trim()).filter(entry => entry && !unavailable.test(entry))).size;
   }
 
   function canRegister(vehicle) {
-    return String(vehicle?.status || '').trim() === 'Эксплуатируется'
+    const status = String(vehicle?.status || '').trim().toLocaleLowerCase('ru-RU');
+    return ['эксплуатируется', 'in service', 'in operation', 'operational'].includes(status)
       && assignedDriverCount(vehicle?.drivers) < 3;
   }
 
@@ -349,15 +362,154 @@
     }
   }
 
+  function vehicleByBoardNumber(boardNumber) {
+    return window.TRPVehicleDatabase?.vehicles?.find(entry => {
+      return String(entry.boardNumber || entry.id) === String(boardNumber || '');
+    }) || null;
+  }
+
+  function vehicleSectionPath(vehicle, lang = language()) {
+    const sections = window.TRPVehicleDatabase?.sections || [];
+    const byId = new Map(sections.map(section => [String(section.id), section]));
+    const labels = [];
+    const visited = new Set();
+    let current = byId.get(String(vehicle?.sectionId || ''));
+    while (current && !visited.has(String(current.id)) && labels.length < 16) {
+      visited.add(String(current.id));
+      labels.unshift(lang === 'en' ? current.nameEn || current.nameRu : current.nameRu || current.nameEn);
+      current = byId.get(String(current.parentId || ''));
+    }
+    return labels.filter(Boolean).join(' / ');
+  }
+
+  function modalCopy() {
+    return language() === 'en'
+      ? { noData: 'Not specified', author: 'Author', photoAlt: 'Vehicle photo' }
+      : { noData: 'Не указано', author: 'Автор', photoAlt: 'Фотография транспорта' };
+  }
+
+  function setModalValue(id, value) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const normalized = String(value == null ? '' : value).trim();
+    target.textContent = normalized && normalized !== '-' && normalized !== '—'
+      ? normalized
+      : modalCopy().noData;
+  }
+
+  function resolvePhotoUrl(value) {
+    try {
+      const url = new URL(String(value || '').trim(), window.location.href);
+      return /^https?:$/.test(url.protocol) ? url.href : '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function renderVehiclePhotos(vehicle) {
+    const section = document.getElementById('modalPhotosSection');
+    const list = document.getElementById('modalPhotosList');
+    if (!section || !list) return;
+    const photos = Array.isArray(vehicle?.photos)
+      ? vehicle.photos.filter(photo => resolvePhotoUrl(photo?.img))
+      : [];
+    list.replaceChildren();
+    section.hidden = !photos.length;
+    section.style.display = photos.length ? '' : 'none';
+    photos.forEach((photo, index) => {
+      const card = element('article', 'tbus-photo-card');
+      card.style.setProperty('--photo-index', String(index));
+      const imageWrap = element('div', 'tbus-photo-img-wrap');
+      const image = document.createElement('img');
+      image.className = 'tbus-photo-img';
+      image.src = resolvePhotoUrl(photo.img);
+      image.alt = `${modalCopy().photoAlt} ${vehicle.boardNumber || vehicle.id}`;
+      image.loading = 'lazy';
+      image.addEventListener('error', () => card.remove());
+      imageWrap.append(image);
+
+      const meta = element('div', 'tbus-photo-meta');
+      const depot = language() === 'en' ? photo.depot_en || photo.depot_ru : photo.depot_ru || photo.depot_en;
+      if (depot) meta.append(element('div', 'tbus-photo-depot', depot));
+      if (photo.date) meta.append(element('div', 'tbus-photo-date', photo.date));
+      if (photo.author) {
+        const authorRow = element('div', 'tbus-photo-author-row');
+        authorRow.append(document.createTextNode(`${modalCopy().author}: `));
+        const authorUrl = resolvePhotoUrl(photo.authorUrl);
+        if (authorUrl) {
+          const author = element('a', 'tbus-photo-author', photo.author);
+          author.href = authorUrl;
+          author.target = '_blank';
+          author.rel = 'noopener noreferrer';
+          authorRow.append(author);
+        } else {
+          authorRow.append(element('span', 'tbus-photo-author', photo.author));
+        }
+        meta.append(authorRow);
+      }
+      if (photo.event) meta.append(element('div', 'tbus-photo-event', photo.event));
+      card.append(imageWrap, meta);
+      list.append(card);
+    });
+  }
+
+  function syncVehicleModal(boardNumber) {
+    const vehicle = vehicleByBoardNumber(boardNumber);
+    if (!vehicle) {
+      updateRegistrationButton('');
+      return;
+    }
+    const lang = language();
+    const modal = document.getElementById('tbusModal');
+    const overlay = document.getElementById('tbusModalOverlay');
+    if (overlay) {
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-labelledby', 'modalBoardNumber');
+    }
+    setModalValue('modalBoardNumber', vehicle.boardNumber || vehicle.id);
+    setModalValue('modalDepot', vehicleSectionPath(vehicle, lang));
+    setModalValue('modalModel', vehicle.model);
+    setModalValue('modalFactoryNumber', vehicle.factoryNumber);
+    setModalValue('modalBuilt', vehicle.built);
+    setModalValue('modalArrived', vehicle.arrived);
+    setModalValue('modalAssignment', lang === 'en' ? vehicle.assignmentEn || vehicle.assignmentRu : vehicle.assignmentRu || vehicle.assignmentEn);
+    setModalValue('modalLivery', vehicle.livery);
+    setModalValue('modalInfo', lang === 'en' ? vehicle.informationEn || vehicle.informationRu : vehicle.informationRu || vehicle.informationEn);
+    setModalValue('modalDrivers', vehicle.drivers);
+    setModalValue('modalCode', vehicle.code);
+
+    const status = document.getElementById('modalStatusBadge');
+    if (status) {
+      status.dataset.status = vehicle.status || '';
+      status.textContent = localizedStatus(vehicle.status, lang) || modalCopy().noData;
+    }
+    const copyButton = document.getElementById('modalCopyBtn');
+    if (copyButton) {
+      copyButton.dataset.code = String(vehicle.code || '').trim();
+      copyButton.disabled = !copyButton.dataset.code;
+    }
+    ['modalInfo', 'modalDrivers', 'modalCode'].forEach(id => {
+      document.getElementById(id)?.closest('.tbus-info-row')?.classList.add('tbus-info-row--wide');
+    });
+    document.querySelectorAll('#tbusModal .tbus-info-row').forEach((row, index) => {
+      row.style.setProperty('--row-index', String(index));
+    });
+    renderVehiclePhotos(vehicle);
+    updateRegistrationButton(boardNumber);
+    if (modal) {
+      modal.classList.remove('is-populated');
+      window.requestAnimationFrame(() => modal.classList.add('is-populated'));
+    }
+  }
+
   function updateRegistrationButton(boardNumber) {
     const button = document.getElementById('modalRegisterBtn');
     if (!button) return;
-    const vehicle = window.TRPVehicleDatabase?.vehicles?.find(entry => {
-      return String(entry.boardNumber || entry.id) === String(boardNumber || '');
-    });
+    const vehicle = vehicleByBoardNumber(boardNumber);
     const available = canRegister(vehicle);
-    button.hidden = !available;
-    button.style.display = available ? '' : 'none';
+    button.toggleAttribute('hidden', !available);
+    button.style.display = available ? 'flex' : 'none';
     button.setAttribute('aria-hidden', String(!available));
     if (available) {
       const url = new URL(registrationPath, window.location.href);
@@ -379,7 +531,11 @@
       const target = container();
       if (!target || !window.TRPVehicleDatabase) return;
       if (!target.querySelector('.table-block')) render(window.TRPVehicleDatabase);
-      updateRegistrationButton('');
+      const overlay = document.getElementById('tbusModalOverlay');
+      const activeBoardNumber = overlay?.classList.contains('active')
+        ? document.getElementById('modalBoardNumber')?.textContent?.trim()
+        : '';
+      updateRegistrationButton(activeBoardNumber);
       scheduleLocalizedStatusUi();
     }, 40);
   }
@@ -389,7 +545,7 @@
   document.addEventListener('click', event => {
     const vehicleLink = event.target.closest('.tbus-link');
     if (vehicleLink) {
-      window.setTimeout(() => updateRegistrationButton(vehicleLink.dataset.id), 0);
+      window.setTimeout(() => syncVehicleModal(vehicleLink.dataset.id), 0);
     }
     if (event.target.closest('#lang-btn')) {
       [100, 500, 1000, 1800, 2600].forEach(delay => window.setTimeout(restoreAfterBodyReplacement, delay));
