@@ -76,7 +76,11 @@
   }
 
   function bindWorkerIdentifierStorage(root = document) {
-    const inputs = root.querySelectorAll?.('input#worker-identifier, input[name="workerIdentifier"]') || [];
+    const selector = 'input#worker-identifier, input[name="workerIdentifier"]';
+    const inputs = [
+      ...(root.matches?.(selector) ? [root] : []),
+      ...(root.querySelectorAll?.(selector) || [])
+    ];
     for (const input of inputs) {
       if (input.dataset.workerIdentifierStorage === 'true') continue;
       input.dataset.workerIdentifierStorage = 'true';
@@ -91,9 +95,18 @@
           if (other !== input) other.value = value;
         });
       };
+      input.addEventListener('input', persist);
       input.addEventListener('change', persist);
       input.addEventListener('blur', persist);
     }
+  }
+
+  function restoreWorkerIdentifier(value) {
+    const normalized = String(value || '').trim().toUpperCase();
+    if (!/^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(normalized)) return;
+    document.querySelectorAll('input#worker-identifier, input[name="workerIdentifier"]').forEach((input) => {
+      if (input.value !== normalized) input.value = normalized;
+    });
   }
 
   function createAdministrativeSubmenu() {
@@ -227,7 +240,7 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260808b') });
+      await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260809b') });
   }
 
   function boot() {
@@ -250,14 +263,17 @@
     boot();
   }
 
-  window.addEventListener('storage', syncLabels);
+  window.addEventListener('storage', (event) => {
+    syncLabels();
+    if (event.key === WORKER_IDENTIFIER_KEY) restoreWorkerIdentifier(event.newValue);
+  });
   window.addEventListener('trp-site-settings-change', syncLabels);
   document.addEventListener('click', (event) => {
     if (!event.target.closest('#lang-btn')) return;
     window.setTimeout(syncLabels, 0);
     window.setTimeout(syncLabels, 500);
   });
-  window.TrpInstallNavigation = { sync: syncLabels, boot };
+  window.TrpInstallNavigation = { sync: syncLabels, boot, bindWorkerIdentifierStorage };
   if (document.body) {
     new MutationObserver((records) => {
       for (const record of records) {
