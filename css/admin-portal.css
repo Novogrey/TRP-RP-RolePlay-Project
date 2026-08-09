@@ -75,6 +75,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; max-width: 860px; margin-bottom: 18px; }
 .admin-field-wide { grid-column: 1 / -1; }
 .admin-status-badge { padding: 8px 11px; border: 1px solid currentColor; font-weight: 800; }
+.admin-status-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
 .admin-vehicle-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 16px; padding: 14px; border: 1px solid var(--admin-border); background: var(--admin-surface); }
 .admin-section-filter { width: min(360px, 100%); }
 .admin-vehicle-count { color: var(--admin-muted); font-size: 13px; font-weight: 700; white-space: nowrap; }
@@ -84,6 +85,9 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-section-row { display: grid; grid-template-columns: 1fr auto auto; gap: 5px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--admin-border); }
 .admin-section-row button { min-height: 34px; width: 34px; }
 .admin-section-row.is-active { margin: 0 -8px; padding-right: 8px; padding-left: 8px; border-left: 3px solid var(--admin-primary); background: color-mix(in srgb, var(--admin-primary) 10%, transparent); }
+.admin-section-row.is-child { margin-left: 18px; }
+.admin-section-row.is-category .admin-section-name { font-weight: 850; }
+.admin-section-row.is-child .admin-section-name::before { content: "\2514"; margin-right: 7px; color: var(--admin-muted); }
 .admin-section-name { width: auto !important; min-width: 0; padding: 5px 7px; overflow: hidden; border: 0; background: transparent; color: var(--admin-text); cursor: pointer; font: inherit; font-weight: 750; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .admin-section-name:hover { color: var(--admin-primary); }
 .admin-dialog { position: fixed; top: 50%; left: 50%; width: min(620px, calc(100vw - 28px)); max-width: none; max-height: calc(100dvh - 28px); margin: 0; padding: 22px; transform: translate(-50%, -50%); color: var(--admin-text); border: 1px solid var(--admin-border); border-radius: 6px; background: var(--admin-surface); box-shadow: 0 28px 90px rgba(0, 0, 0, .54); }
@@ -117,11 +121,21 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-photo-remove { position: absolute; top: 14px; right: 14px; width: 34px; min-height: 34px; padding: 0; overflow: hidden; color: transparent; }
 .admin-photo-remove::after { content: "\00d7"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 19px; }
 .admin-photo-empty { margin: 0; padding: 30px 16px; border: 1px dashed var(--admin-border); color: var(--admin-muted); text-align: center; }
+.admin-shift-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.admin-shift-section { min-width: 0; }
+.admin-shift-row { display: grid; gap: 12px; padding: 17px; border: 1px solid var(--admin-border); border-left: 4px solid var(--admin-primary); background: var(--admin-surface); }
+.admin-shift-row h4 { margin: 0; font-size: 16px; letter-spacing: 0; }
+.admin-shift-row p { margin: 0; color: var(--admin-muted); line-height: 1.5; }
+.admin-shift-row .admin-primary-button { justify-self: start; }
+.admin-page-indicator { color: var(--admin-muted); font-size: 12px; font-weight: 750; }
+.admin-pagination { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.admin-dialog-lead { margin: 0 0 18px; padding: 12px; border-left: 3px solid var(--admin-primary); background: var(--admin-surface-2); color: var(--admin-muted); }
+.admin-form-help { margin: 0; color: var(--admin-muted); font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 760px) {
   .admin-main { width: min(100% - 20px, 1180px); padding-top: 96px; }
   .admin-header, .admin-panel-heading, .admin-vehicle-toolbar { align-items: stretch; flex-direction: column; }
-  .admin-auth, .admin-auth-controls, .admin-vehicle-layout, .admin-form-grid { grid-template-columns: 1fr; }
+  .admin-auth, .admin-auth-controls, .admin-vehicle-layout, .admin-form-grid, .admin-shift-columns { grid-template-columns: 1fr; }
   .admin-sections { padding: 0 0 16px; border-right: 0; border-bottom: 1px solid var(--admin-border); }
   .admin-field-wide { grid-column: auto; }
   .admin-detail-grid { grid-template-columns: 1fr; }

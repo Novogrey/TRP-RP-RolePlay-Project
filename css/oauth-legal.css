@@ -1,0 +1,165 @@
+:root {
+  color-scheme: dark;
+  --page-bg: #101214;
+  --panel-bg: #171a1e;
+  --panel-border: #30363d;
+  --text-primary: #f3f4f6;
+  --text-secondary: #aeb6c2;
+  --accent: #4b9cff;
+  --accent-soft: rgba(75, 156, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 280px;
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.legal-shell {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 56px 0 72px;
+}
+
+.legal-header {
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.product-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 34px;
+}
+
+.product-mark img {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.product-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.product-type {
+  margin: 1px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.document-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 9px;
+  border: 1px solid rgba(75, 156, 255, 0.45);
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: #9bc8ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.effective-date {
+  margin: 14px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.legal-content {
+  padding-top: 16px;
+}
+
+.legal-section {
+  padding: 25px 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.legal-section:last-child {
+  border-bottom: 0;
+}
+
+h2 {
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  color: var(--text-secondary);
+}
+
+li + li {
+  margin-top: 7px;
+}
+
+strong {
+  color: var(--text-primary);
+}
+
+.legal-footer {
+  margin-top: 24px;
+  color: #7f8996;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .legal-shell {
+    width: min(100% - 24px, 920px);
+    padding: 28px 0 44px;
+  }
+
+  .product-mark {
+    margin-bottom: 26px;
+  }
+
+  .legal-section {
+    padding: 21px 0;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+}
+
