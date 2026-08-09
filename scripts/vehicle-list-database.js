@@ -3,6 +3,8 @@
 
   const api = String(window.TRP_APPLICATIONS_API_URL || '').trim();
   const registrationPath = '../../forms/applications/registration_&_replacement/';
+  const collapsedGroups = new Set();
+  let collapseControlId = 0;
   const statusCopy = Object.freeze({
     'Эксплуатируется': 'In service',
     'В ремонте': 'Under repair',
@@ -107,7 +109,36 @@
   }
 
   function clearTables(target) {
+    target.querySelectorAll('.vehicle-category').forEach(group => group.remove());
     target.querySelectorAll('.table-block').forEach(block => block.remove());
+  }
+
+  function collapsibleHeading(title, content, key, className, owner) {
+    const heading = element('h2', className);
+    const toggle = element('button', 'vehicle-collapse-toggle');
+    const label = element('span', 'vehicle-collapse-label', title);
+    const icon = element('span', 'vehicle-collapse-icon');
+    const contentId = `vehicle-collapse-${++collapseControlId}`;
+    const collapsed = collapsedGroups.has(key);
+
+    content.id = contentId;
+    content.hidden = collapsed;
+    owner.classList.toggle('is-collapsed', collapsed);
+    toggle.type = 'button';
+    toggle.setAttribute('aria-controls', contentId);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    icon.setAttribute('aria-hidden', 'true');
+    toggle.append(label, icon);
+    toggle.addEventListener('click', () => {
+      const nextCollapsed = !content.hidden;
+      content.hidden = nextCollapsed;
+      owner.classList.toggle('is-collapsed', nextCollapsed);
+      toggle.setAttribute('aria-expanded', String(!nextCollapsed));
+      if (nextCollapsed) collapsedGroups.add(key);
+      else collapsedGroups.delete(key);
+    });
+    heading.append(toggle);
+    return heading;
   }
 
   function showState(kind, message, withRetry = false) {
@@ -137,8 +168,16 @@
   function tableBlock(section, vehicles, lang, hideHeading = false) {
     const block = element('div', 'table-block');
     block.dataset.vehicleSection = section.id;
-    if (!hideHeading) block.append(element('h2', '', lang === 'ru' ? section.nameRu : section.nameEn));
     const wrapper = element('div', 'table-wrapper');
+    if (!hideHeading) {
+      block.append(collapsibleHeading(
+        lang === 'ru' ? section.nameRu : section.nameEn,
+        wrapper,
+        `section:${section.id}`,
+        '',
+        block
+      ));
+    }
     const table = document.createElement('table');
     const head = document.createElement('thead');
     const headerRow = document.createElement('tr');
@@ -188,8 +227,14 @@
 
     const group = element('section', 'vehicle-category');
     group.dataset.vehicleCategory = category.id;
-    group.append(element('h2', 'vehicle-category-title', lang === 'ru' ? category.nameRu : category.nameEn));
     const content = element('div', 'vehicle-category-sections');
+    group.append(collapsibleHeading(
+      lang === 'ru' ? category.nameRu : category.nameEn,
+      content,
+      `category:${category.id}`,
+      'vehicle-category-title',
+      group
+    ));
     if (categoryVehicles.length) content.append(tableBlock(category, categoryVehicles, lang, true));
     populatedChildren.forEach(entry => content.append(tableBlock(entry.section, entry.vehicles, lang)));
     group.append(content);

@@ -8,6 +8,13 @@ body{overflow-x:hidden}*{margin:0;padding:0;box-sizing:border-box}:root{--primar
 .vehicle-category-sections { padding-left: 28px; }
 .vehicle-category-sections .table-block { position: relative; margin-bottom: 34px; }
 .vehicle-category-sections .table-block > h2 { text-align: left; font-size: 1.35rem; }
+.vehicle-collapse-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; font-weight: inherit; text-align: left; }
+.vehicle-collapse-toggle:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 6px; }
+.vehicle-collapse-label { min-width: 0; overflow-wrap: anywhere; }
+.vehicle-collapse-icon { width: 11px; height: 11px; flex: 0 0 11px; margin-right: 4px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform .2s ease; }
+.is-collapsed > h2 .vehicle-collapse-icon { transform: rotate(-45deg); }
+.vehicle-category-sections[hidden], .table-wrapper[hidden] { display: none; }
+.vehicle-category.is-collapsed { margin-bottom: 30px; }
 @media (max-width: 640px) {
   .vehicle-category-title { font-size: 1.45rem; }
   .vehicle-category-sections { padding-left: 12px; }
