@@ -18,13 +18,14 @@
     const payload = await response.json();
     if (!payload?.ok || !payload.status) return;
     const status = payload.status;
-    button.textContent = status.label;
     button.dataset.serverState = status.state;
-    button.style.backgroundColor = status.color;
-    button.style.borderColor = status.color;
+    const unavailable = status.state === 'offline' || status.state === 'restarting';
+    const indicatorColor = unavailable ? '#D83C3E' : '#2E7D32';
+    button.textContent = language() === 'en' ? 'Roblox Server' : 'Сервер Roblox';
+    button.style.backgroundColor = indicatorColor;
+    button.style.borderColor = indicatorColor;
     button.style.color = '#ffffff';
     button.title = status.reason || status.label;
-    const unavailable = status.state === 'offline' || status.state === 'restarting';
     button.setAttribute('aria-disabled', unavailable ? 'true' : 'false');
     if (unavailable) button.removeAttribute('href');
     else button.href = status.joinUrl || originalUrl;
