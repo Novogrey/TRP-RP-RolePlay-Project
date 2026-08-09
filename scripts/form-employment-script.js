@@ -441,6 +441,7 @@ function initEmploymentApplicationForm() {
   setConditionalFieldState(byId("reinstatement-fields"), false);
   byId("lookup-profile").addEventListener("click", lookupProfile);
   const identifierInput = byId("worker-identifier");
+  window.TrpInstallNavigation?.bindWorkerIdentifierStorage(identifierInput);
   const identifierToggle = byId("toggle-worker-identifier");
   const updateIdentifierVisibility = (visible) => {
     identifierInput.type = visible ? "text" : "password";

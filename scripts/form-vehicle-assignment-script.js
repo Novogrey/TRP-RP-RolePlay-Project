@@ -387,6 +387,7 @@ function initVehicleAssignmentForm() {
   }
 
   const identifier = byId("worker-identifier");
+  window.TrpInstallNavigation?.bindWorkerIdentifierStorage(identifier);
   const toggle = byId("toggle-worker-identifier");
   const updateIdentifierVisibility = (visible) => {
     identifier.type = visible ? "text" : "password";
