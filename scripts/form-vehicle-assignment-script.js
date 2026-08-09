@@ -105,6 +105,9 @@ function initVehicleAssignmentForm() {
   if (!form || form.dataset.initialized === "true") return;
   form.dataset.initialized = "true";
   const state = { config: null, profile: null, operation: null };
+  const query = new URLSearchParams(window.location.search);
+  const preferredVehicle = String(query.get('vehicle') || '').trim();
+  const preferredOperation = String(query.get('operation') || '').trim();
   const byId = (id) => document.getElementById(id);
   const lang = () => (localStorage.getItem("language") === "en" ? "en" : "ru");
   const copy = (key) => vehicleAssignmentCopy[lang()][key];
@@ -220,6 +223,15 @@ function initVehicleAssignmentForm() {
     byId("vehicle-list-link").href = state.config.vehicleListUrl;
     applyQuestion("current-vehicle-id", state.config.questions.currentVehicle);
     applyQuestion("new-vehicle-id", state.config.questions.newVehicle);
+    if (preferredVehicle && preferredOperation === "bind") {
+      const operation = state.config.operations.find((entry) => entry.id === "bind");
+      const option = root.querySelector('input[value="bind"]');
+      if (operation && option) {
+        option.checked = true;
+        selectOperation(operation);
+        byId("new-vehicle-id").value = preferredVehicle;
+      }
+    }
   }
 
   function setFieldState(root, enabled) {
@@ -287,9 +299,11 @@ function initVehicleAssignmentForm() {
       renderOperations();
       byId("vehicle-assignment-details").hidden = false;
       byId("vehicle-assignment-result").hidden = true;
-      setFieldState(byId("current-vehicle-field"), false);
-      setFieldState(byId("new-vehicle-field"), false);
-      byId("submit-vehicle-assignment").disabled = true;
+      if (!state.operation) {
+        setFieldState(byId("current-vehicle-field"), false);
+        setFieldState(byId("new-vehicle-field"), false);
+        byId("submit-vehicle-assignment").disabled = true;
+      }
       showStatus(copy("profileReady"), "success");
       updateProgress("details");
     } catch (error) {

@@ -7,6 +7,12 @@
     language: localStorage.getItem('language') === 'en' ? 'en' : 'ru',
     identifier: '',
     applications: [],
+    shiftProfile: null,
+    shiftOffers: [],
+    rpSessions: [],
+    shiftPage: 0,
+    shiftTotalPages: 1,
+    shiftReservation: null,
     statusProfile: null,
     vehicleDatabase: { sections: [], vehicles: [] },
     vehicleSectionFilter: ''
@@ -15,17 +21,18 @@
     ru: {
       eyebrow: 'Внутренние инструменты TRP RP', title: 'Администрирование', accessTitle: 'Доступ',
       accessText: 'Введите личный идентификатор работника. Доступ к каждому разделу определяется отдельно.',
-      identifier: 'Идентификатор работника', login: 'Войти', applications: 'Заявления', serverStatus: 'Статус сервера',
+      identifier: 'Идентификатор работника', login: 'Войти', applications: 'Заявления', shifts: 'Смены и РП-сессии', serverStatus: 'Статус сервера',
       vehicles: 'Автотранспорт', openApplications: 'Открытые заявления',
       openApplicationsText: 'Показываются только заявления, доступные вам для проверки.', refresh: 'Обновить',
       serverStatusText: 'Изменение сохраняется в MongoDB и публикуется в Discord.', newStatus: 'Новый статус',
       comment: 'Комментарий', publishStatus: 'Опубликовать статус', vehicleDatabase: 'База автотранспорта',
       vehicleDatabaseText: 'Разделы и записи синхронизируются с Google Sheets.', importCurrent: 'Импортировать текущий список',
-      addVehicle: 'Добавить транспорт', sections: 'Разделы', filterSection: 'Фильтр по разделу', allSections: 'Все разделы',
+      addVehicle: 'Добавить транспорт', sections: 'Категории и разделы', filterSection: 'Фильтр по категории или разделу', allSections: 'Все категории и разделы',
       vehicleCount: 'Показано: {shown} из {total}', noVehiclesInSection: 'В выбранном разделе нет записей.',
       cancel: 'Отмена', confirm: 'Подтвердить', save: 'Сохранить',
       vehicleRecord: 'Запись автотранспорта', addVehicleRecord: 'Регистрация транспорта', editVehicleRecord: 'Редактирование транспорта',
-      sectionRecord: 'Раздел списка', section: 'Раздел', sortOrder: 'Порядок',
+      sectionRecord: 'Категория или раздел списка', section: 'Раздел', sortOrder: 'Порядок',
+      parentCategory: 'Родительская категория', rootCategory: 'Без родительской категории',
       boardNumber: 'Бортовой номер', model: 'Модель', status: 'Статус', factoryNumber: 'Заводской номер',
       built: 'Построен', arrived: 'Поступил', assignmentRu: 'Назначение (RU)', assignmentEn: 'Назначение (EN)',
       livery: 'Окраска', drivers: 'Закреплённые водители', informationRu: 'Дополнительная информация (RU)',
@@ -49,21 +56,35 @@
       liveriesUnavailable: 'Для этой модели окраски недоступны.', duplicateBoard: 'Этот бортовой номер уже используется.',
       duplicateFactory: 'Этот заводской номер уже используется.',
       currentScore: 'Автоматические баллы', answer: 'Ответ', score: 'Баллы', accessDenied: 'Раздел недоступен для ваших ролей.',
-      show: 'Показать', hide: 'Скрыть'
+      show: 'Показать', hide: 'Скрыть',
+      availableShifts: 'Доступные даты', availableShiftsText: 'Даты берутся из того же графика, что и команда /график-смен. Создание доступно только сотрудникам с правом ДТУ.',
+      availableOffers: 'Можно взять', upcomingRpSessions: 'Предстоящие РП-сессии', previous: 'Назад', next: 'Далее',
+      takeShift: 'Взять', noShiftOffers: 'Свободных дат сейчас нет.', noRpSessions: 'Предстоящих РП-сессий нет.',
+      page: 'Страница {page} из {total}', createScheduledEvent: 'Создание публикации', eventType: 'Тип события',
+      regularShift: 'Смена', rpSession: 'РП-сессия', publicationLanguage: 'Язык публикации', startTime: 'Начало по Москве',
+      endTime: 'Окончание по Москве', breakStart: 'Начало перерыва', breakEnd: 'Окончание перерыва',
+      breakHelp: 'Для события продолжительностью от 4 часов необходимо указать начало и окончание перерыва.',
+      publish: 'Опубликовать', reservationUntil: 'Резерв действует до {time}.', shiftPublished: 'Публикация создана: {code}.',
+      shiftDate: 'Дата по Москве: {date}', organizer: 'Организатор: {name}', lockPanel: 'Заблокировать панель',
+      unlockPanel: 'Разблокировать панель', panelLocked: 'Панель заблокирована разработчиком.',
+      lockReason: 'Причина блокировки', lockDuration: 'Срок в минутах',
+      lockDurationHelp: 'Укажите 0 для бессрочной блокировки.', permanentLock: 'бессрочно',
+      lockedUntil: 'до {time}', lockedDetails: '{reason}; {duration}'
     },
     en: {
       eyebrow: 'TRP RP internal tools', title: 'Administration', accessTitle: 'Access',
       accessText: 'Enter your personal employee identifier. Access is checked separately for each section.',
-      identifier: 'Employee identifier', login: 'Sign in', applications: 'Applications', serverStatus: 'Server status',
+      identifier: 'Employee identifier', login: 'Sign in', applications: 'Applications', shifts: 'Shifts and RP sessions', serverStatus: 'Server status',
       vehicles: 'Vehicles', openApplications: 'Open applications', openApplicationsText: 'Only applications available for your review are shown.',
       refresh: 'Refresh', serverStatusText: 'Changes are stored in MongoDB and published to Discord.', newStatus: 'New status',
       comment: 'Comment', publishStatus: 'Publish status', vehicleDatabase: 'Vehicle database',
       vehicleDatabaseText: 'Sections and records are synchronized with Google Sheets.', importCurrent: 'Import current list',
-      addVehicle: 'Add vehicle', sections: 'Sections', filterSection: 'Filter by section', allSections: 'All sections',
+      addVehicle: 'Add vehicle', sections: 'Categories and sections', filterSection: 'Filter by category or section', allSections: 'All categories and sections',
       vehicleCount: 'Showing {shown} of {total}', noVehiclesInSection: 'There are no records in the selected section.',
       cancel: 'Cancel', confirm: 'Confirm', save: 'Save',
       vehicleRecord: 'Vehicle record', addVehicleRecord: 'Register vehicle', editVehicleRecord: 'Edit vehicle',
-      sectionRecord: 'List section', section: 'Section', sortOrder: 'Order',
+      sectionRecord: 'List category or section', section: 'Section', sortOrder: 'Order',
+      parentCategory: 'Parent category', rootCategory: 'No parent category',
       boardNumber: 'Fleet number', model: 'Model', status: 'Status', factoryNumber: 'Factory number', built: 'Built',
       arrived: 'Arrived', assignmentRu: 'Assignment (RU)', assignmentEn: 'Assignment (EN)', livery: 'Livery',
       drivers: 'Assigned drivers', informationRu: 'Additional information (RU)', informationEn: 'Additional information (EN)',
@@ -87,7 +108,20 @@
       liveriesUnavailable: 'No liveries are available for this model.', duplicateBoard: 'This fleet number is already in use.',
       duplicateFactory: 'This factory number is already in use.',
       currentScore: 'Automatic score', answer: 'Answer', score: 'Score', accessDenied: 'This section is unavailable for your roles.',
-      show: 'Show', hide: 'Hide'
+      show: 'Show', hide: 'Hide',
+      availableShifts: 'Available dates', availableShiftsText: 'Dates come from the same schedule as /shift-schedule. Creation is available only to employees with DTC permission.',
+      availableOffers: 'Available to claim', upcomingRpSessions: 'Upcoming RP sessions', previous: 'Previous', next: 'Next',
+      takeShift: 'Claim', noShiftOffers: 'There are no available dates.', noRpSessions: 'There are no upcoming RP sessions.',
+      page: 'Page {page} of {total}', createScheduledEvent: 'Create publication', eventType: 'Event type',
+      regularShift: 'Shift', rpSession: 'RP session', publicationLanguage: 'Publication language', startTime: 'Start time in Moscow',
+      endTime: 'End time in Moscow', breakStart: 'Break start', breakEnd: 'Break end',
+      breakHelp: 'Events lasting 4 hours or more require a break start and end time.',
+      publish: 'Publish', reservationUntil: 'Reservation is valid until {time}.', shiftPublished: 'Publication created: {code}.',
+      shiftDate: 'Moscow date: {date}', organizer: 'Organizer: {name}', lockPanel: 'Lock panel',
+      unlockPanel: 'Unlock panel', panelLocked: 'The panel is locked by the developer.',
+      lockReason: 'Lock reason', lockDuration: 'Duration in minutes',
+      lockDurationHelp: 'Enter 0 for a permanent lock.', permanentLock: 'permanently',
+      lockedUntil: 'until {time}', lockedDetails: '{reason}; {duration}'
     }
   };
 
@@ -99,6 +133,8 @@
     'Не эксплуатируется',
     'Выведен из эксплуатации / ожидание исключения',
     'Капитально-восстановительный ремонт',
+    'Загружается',
+    'Модернизация',
     'Списан',
     'Передан в другой город',
     'Местонахождение и судьба неизвестны'
@@ -145,6 +181,7 @@
     const langButton = byId('lang-btn');
     if (langButton) langButton.textContent = state.language === 'ru' ? 'EN' : 'RU';
     renderApplications();
+    renderShifts();
     renderStatus();
     renderVehicles();
   }
@@ -388,6 +425,22 @@
       optionElement.selected = item.id === profile.status.state;
       select.append(optionElement);
     });
+    const lockButton = byId('toggle-status-lock');
+    const saveButton = byId('save-server-status');
+    const locked = Boolean(profile.lock?.locked);
+    lockButton.hidden = !profile.lock?.canManage;
+    lockButton.textContent = t(locked ? 'unlockPanel' : 'lockPanel');
+    select.disabled = locked && !profile.lock?.canManage;
+    saveButton.disabled = locked && !profile.lock?.canManage;
+    if (locked) {
+      const duration = profile.lock?.expiresAt
+        ? t('lockedUntil').replace('{time}', formatMoscowDate(profile.lock.expiresAt, true))
+        : t('permanentLock');
+      const details = t('lockedDetails')
+        .replace('{reason}', profile.lock?.reason || t('panelLocked'))
+        .replace('{duration}', duration);
+      setNotice('server-status-notice', `${t('panelLocked')} ${details}`, profile.lock?.canManage ? '' : 'error');
+    }
   }
 
   async function loadStatusProfile() {
@@ -412,6 +465,212 @@
     setNotice('server-status-notice', t('statusSaved'), 'success');
   }
 
+  async function toggleStatusLock() {
+    const locked = Boolean(state.statusProfile?.lock?.locked);
+    if (!locked) {
+      byId('status-lock-reason').value = '';
+      byId('status-lock-duration').value = '60';
+      setNotice('status-lock-notice', '', '');
+      byId('status-lock-dialog').showModal();
+      return;
+    }
+    await post(payload('admin-status-update', { action: 'unlock' }));
+    await loadStatusProfile();
+  }
+
+  async function submitStatusLock() {
+    const durationMinutes = Number(byId('status-lock-duration').value);
+    const lockReason = byId('status-lock-reason').value.trim();
+    await post(payload('admin-status-update', {
+      action: 'lock',
+      lockReason,
+      durationMinutes
+    }));
+    byId('status-lock-dialog').close();
+    await loadStatusProfile();
+  }
+
+  function formatMoscowDate(value, includeTime = false) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '—';
+    return new Intl.DateTimeFormat(state.language === 'ru' ? 'ru-RU' : 'en-GB', {
+      timeZone: 'Europe/Moscow',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      ...(includeTime ? { hour: '2-digit', minute: '2-digit' } : {})
+    }).format(date);
+  }
+
+  function shiftRow(title, description, action = null) {
+    const row = document.createElement('article');
+    row.className = 'admin-shift-row';
+    const heading = document.createElement('h4');
+    heading.textContent = title;
+    const body = document.createElement('p');
+    body.textContent = description;
+    row.append(heading, body);
+    if (action) row.append(action);
+    return row;
+  }
+
+  function renderShifts() {
+    const offers = byId('available-shift-list');
+    const sessions = byId('upcoming-rp-list');
+    if (!offers || !sessions) return;
+    offers.replaceChildren();
+    sessions.replaceChildren();
+
+    if (!state.shiftOffers.length) {
+      const empty = document.createElement('div');
+      empty.className = 'admin-empty';
+      empty.textContent = t('noShiftOffers');
+      offers.append(empty);
+    } else {
+      state.shiftOffers.forEach(offer => {
+        const date = formatMoscowDate(offer.windowStartAt);
+        offers.append(shiftRow(
+          date,
+          t('shiftDate').replace('{date}', date),
+          button(t('takeShift'), 'admin-primary-button', () => claimShift(offer))
+        ));
+      });
+    }
+
+    if (!state.rpSessions.length) {
+      const empty = document.createElement('div');
+      empty.className = 'admin-empty';
+      empty.textContent = t('noRpSessions');
+      sessions.append(empty);
+    } else {
+      state.rpSessions.forEach(session => {
+        const row = shiftRow(
+          `${formatMoscowDate(session.startAt, true)} - ${formatMoscowDate(session.endAt, true)}`,
+          t('organizer').replace('{name}', session.organizerName || '—')
+        );
+        if (session.threadUrl) {
+          const link = document.createElement('a');
+          link.href = session.threadUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.className = 'admin-secondary-button';
+          link.textContent = state.language === 'ru' ? 'Открыть публикацию' : 'Open publication';
+          row.append(link);
+        }
+        sessions.append(row);
+      });
+    }
+
+    byId('shift-page-indicator').textContent = t('page')
+      .replace('{page}', String(state.shiftPage + 1))
+      .replace('{total}', String(state.shiftTotalPages));
+    byId('shift-page-previous').disabled = state.shiftPage <= 0;
+    byId('shift-page-next').disabled = state.shiftPage >= state.shiftTotalPages - 1;
+  }
+
+  async function loadShifts(page = state.shiftPage) {
+    try {
+      const result = await post(payload('admin-shifts-profile', { page }));
+      state.shiftProfile = result.profile;
+      state.shiftOffers = result.offers || [];
+      state.rpSessions = result.rpSessions || [];
+      state.shiftPage = Number(result.page) || 0;
+      state.shiftTotalPages = Math.max(1, Number(result.totalPages) || 1);
+      setNotice('shift-notice', '', '');
+    } catch (error) {
+      state.shiftProfile = null;
+      state.shiftOffers = [];
+      state.rpSessions = [];
+      state.shiftPage = 0;
+      state.shiftTotalPages = 1;
+      setNotice('shift-notice', error.message, 'error');
+    }
+    renderShifts();
+  }
+
+  async function claimShift(offer) {
+    setNotice('shift-notice', '', '');
+    const result = await post(payload('admin-shifts-claim', { offerId: offer.id }));
+    state.shiftReservation = result.reservation;
+    byId('shift-selected-date').textContent = `${t('shiftDate').replace('{date}', formatMoscowDate(result.offer.windowStartAt))} ${t('reservationUntil').replace('{time}', formatMoscowDate(result.reservation.expiresAt, true))}`;
+    byId('shift-event-type').value = 'shift';
+    byId('shift-language').value = state.language;
+    byId('shift-start-time').value = '';
+    byId('shift-end-time').value = '';
+    byId('shift-break-start').value = '';
+    byId('shift-break-end').value = '';
+    setNotice('shift-dialog-notice', '', '');
+    byId('shift-dialog').showModal();
+  }
+
+  async function publishClaimedShift() {
+    if (!state.shiftReservation) throw new Error(t('requestFailed'));
+    byId('publish-shift').disabled = true;
+    try {
+      const result = await post(payload('admin-shifts-publish', {
+        reservation: state.shiftReservation,
+        eventType: byId('shift-event-type').value,
+        publicationLanguage: byId('shift-language').value,
+        startTime: byId('shift-start-time').value,
+        endTime: byId('shift-end-time').value,
+        breakStartTime: byId('shift-break-start').value,
+        breakEndTime: byId('shift-break-end').value
+      }));
+      state.shiftReservation = null;
+      byId('shift-dialog').close();
+      await loadShifts(state.shiftPage);
+      setNotice('shift-notice', t('shiftPublished').replace('{code}', result.code), 'success');
+    } catch (error) {
+      state.shiftReservation = null;
+      setNotice('shift-dialog-notice', error.message, 'error');
+      await loadShifts(state.shiftPage);
+    } finally {
+      byId('publish-shift').disabled = false;
+    }
+  }
+
+  function orderedVehicleSections(sections) {
+    const sorted = [...sections].sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder));
+    const ids = new Set(sorted.map(section => section.id));
+    const children = new Map();
+    sorted.forEach(section => {
+      const parentId = ids.has(section.parentId) ? section.parentId : '';
+      if (!children.has(parentId)) children.set(parentId, []);
+      children.get(parentId).push(section);
+    });
+    const result = [];
+    const visited = new Set();
+    const visit = (section, depth) => {
+      if (visited.has(section.id)) return;
+      visited.add(section.id);
+      result.push({ section, depth });
+      (children.get(section.id) || []).forEach(child => visit(child, depth + 1));
+    };
+    (children.get('') || []).forEach(section => visit(section, 0));
+    sorted.forEach(section => visit(section, 0));
+    return result;
+  }
+
+  function vehicleSectionLabel(section) {
+    return state.language === 'ru' ? section.nameRu : section.nameEn;
+  }
+
+  function vehicleSectionFilterIds(sectionId, sections) {
+    if (!sectionId) return null;
+    const result = new Set([sectionId]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      sections.forEach(section => {
+        if (result.has(section.parentId) && !result.has(section.id)) {
+          result.add(section.id);
+          changed = true;
+        }
+      });
+    }
+    return result;
+  }
+
   function renderVehicles() {
     const sectionList = byId('vehicle-sections');
     const vehicleList = byId('vehicle-list');
@@ -423,7 +682,9 @@
     vehicleList.replaceChildren();
     sectionSelect.replaceChildren();
     sectionFilter.replaceChildren();
-    const sections = [...state.vehicleDatabase.sections].sort((a, b) => a.sortOrder - b.sortOrder);
+    const sections = [...state.vehicleDatabase.sections];
+    const orderedSections = orderedVehicleSections(sections);
+    const childParentIds = new Set(sections.map(section => section.parentId).filter(Boolean));
     if (state.vehicleSectionFilter && !sections.some(section => section.id === state.vehicleSectionFilter)) {
       state.vehicleSectionFilter = '';
     }
@@ -431,12 +692,14 @@
     allSections.value = '';
     allSections.textContent = t('allSections');
     sectionFilter.append(allSections);
-    sections.forEach(section => {
+    orderedSections.forEach(({ section, depth }) => {
       const row = document.createElement('div');
       row.className = 'admin-section-row';
+      row.classList.toggle('is-child', depth > 0);
+      row.classList.toggle('is-category', childParentIds.has(section.id));
       row.classList.toggle('is-active', state.vehicleSectionFilter === section.id);
       const label = button(
-        state.language === 'ru' ? section.nameRu : section.nameEn,
+        vehicleSectionLabel(section),
         'admin-section-name',
         () => {
           state.vehicleSectionFilter = section.id;
@@ -451,9 +714,12 @@
       sectionList.append(row);
       const optionElement = document.createElement('option');
       optionElement.value = section.id;
-      optionElement.textContent = label.textContent;
+      optionElement.textContent = `${depth ? '— '.repeat(depth) : ''}${label.textContent}`;
+      optionElement.disabled = childParentIds.has(section.id);
       sectionSelect.append(optionElement);
-      sectionFilter.append(optionElement.cloneNode(true));
+      const filterOption = optionElement.cloneNode(true);
+      filterOption.disabled = false;
+      sectionFilter.append(filterOption);
     });
     sectionFilter.value = state.vehicleSectionFilter;
     if (!sections.length && !state.vehicleDatabase.vehicles.length) {
@@ -464,9 +730,11 @@
       if (vehicleCount) vehicleCount.textContent = '';
       return;
     }
+    const visibleSectionIds = vehicleSectionFilterIds(state.vehicleSectionFilter, sections);
+    const sectionOrder = new Map(orderedSections.map(({ section }, index) => [section.id, index]));
     const vehicles = [...state.vehicleDatabase.vehicles]
-      .filter(vehicle => !state.vehicleSectionFilter || vehicle.sectionId === state.vehicleSectionFilter)
-      .sort((a, b) => a.sectionId.localeCompare(b.sectionId) || a.sortOrder - b.sortOrder);
+      .filter(vehicle => !visibleSectionIds || visibleSectionIds.has(vehicle.sectionId))
+      .sort((a, b) => (sectionOrder.get(a.sectionId) ?? 9999) - (sectionOrder.get(b.sectionId) ?? 9999) || a.sortOrder - b.sortOrder);
     if (vehicleCount) {
       vehicleCount.textContent = t('vehicleCount')
         .replace('{shown}', String(vehicles.length))
@@ -479,7 +747,12 @@
       vehicleList.append(empty);
       return;
     }
-    const sectionMap = new Map(sections.map(section => [section.id, state.language === 'ru' ? section.nameRu : section.nameEn]));
+    const sectionsById = new Map(sections.map(section => [section.id, section]));
+    const sectionMap = new Map(sections.map(section => {
+      const parent = sectionsById.get(section.parentId);
+      const name = vehicleSectionLabel(section);
+      return [section.id, parent ? `${vehicleSectionLabel(parent)} / ${name}` : name];
+    }));
     vehicles.forEach(vehicle => {
       const row = document.createElement('article');
       row.className = 'admin-vehicle-row';
@@ -525,11 +798,30 @@
   }
 
   function openSection(section = null) {
+    const parentSelect = byId('section-parent');
+    parentSelect.replaceChildren();
+    const emptyParent = document.createElement('option');
+    emptyParent.value = '';
+    emptyParent.textContent = t('rootCategory');
+    parentSelect.append(emptyParent);
+    const hasChildren = Boolean(section && state.vehicleDatabase.sections.some(entry => entry.parentId === section.id));
+    state.vehicleDatabase.sections
+      .filter(entry => !entry.parentId && entry.id !== section?.id)
+      .sort((left, right) => Number(left.sortOrder) - Number(right.sortOrder))
+      .forEach(entry => {
+        const option = document.createElement('option');
+        option.value = entry.id;
+        option.textContent = vehicleSectionLabel(entry);
+        option.disabled = state.vehicleDatabase.vehicles.some(vehicle => vehicle.sectionId === entry.id);
+        parentSelect.append(option);
+      });
     byId('section-id').value = section?.id || '';
     byId('section-id').readOnly = Boolean(section);
     byId('section-name-ru').value = section?.nameRu || '';
     byId('section-name-en').value = section?.nameEn || '';
     byId('section-order').value = section?.sortOrder ?? state.vehicleDatabase.sections.length;
+    parentSelect.value = section?.parentId || '';
+    parentSelect.disabled = hasChildren;
     byId('section-dialog').showModal();
   }
 
@@ -540,7 +832,8 @@
         id: byId('section-id').value.trim(),
         nameRu: byId('section-name-ru').value.trim(),
         nameEn: byId('section-name-en').value.trim(),
-        sortOrder: Number(byId('section-order').value) || 0
+        sortOrder: Number(byId('section-order').value) || 0,
+        parentId: byId('section-parent').value
       }
     });
     byId('section-dialog').close();
@@ -766,7 +1059,10 @@
     Object.entries(vehicleFieldIds).forEach(([key, id]) => {
       byId(id).value = vehicle?.[key] ?? (key === 'sortOrder' ? state.vehicleDatabase.vehicles.length : '');
     });
-    if (!vehicle && state.vehicleSectionFilter) byId('vehicle-section').value = state.vehicleSectionFilter;
+    if (!vehicle && state.vehicleSectionFilter
+        && !state.vehicleDatabase.sections.some(section => section.parentId === state.vehicleSectionFilter)) {
+      byId('vehicle-section').value = state.vehicleSectionFilter;
+    }
     renderPhotoEditor(vehicle?.photos || []);
     setNotice('vehicle-dialog-notice', '', '');
     byId('vehicle-dialog').showModal();
@@ -848,7 +1144,7 @@
     localStorage.setItem(STORAGE_KEY, identifier);
     setNotice('admin-notice', t('loading'), '');
     byId('admin-login').disabled = true;
-    const tasks = await Promise.allSettled([refreshApplications(), loadStatusProfile(), loadVehicles()]);
+    const tasks = await Promise.allSettled([refreshApplications(), loadShifts(), loadStatusProfile(), loadVehicles()]);
     byId('admin-login').disabled = false;
     if (tasks.every(result => result.status === 'rejected')) {
       return setNotice('admin-notice', tasks[0].reason?.message || t('requestFailed'), 'error');
@@ -879,7 +1175,19 @@
       history.replaceState(null, '', `#${tab.dataset.tab}`);
     }));
     byId('refresh-applications').addEventListener('click', () => refreshApplications().catch(error => setNotice('admin-notice', error.message, 'error')));
+    byId('refresh-shifts').addEventListener('click', () => loadShifts().catch(error => setNotice('shift-notice', error.message, 'error')));
+    byId('shift-page-previous').addEventListener('click', () => loadShifts(Math.max(0, state.shiftPage - 1)));
+    byId('shift-page-next').addEventListener('click', () => loadShifts(Math.min(state.shiftTotalPages - 1, state.shiftPage + 1)));
+    byId('shift-form').addEventListener('submit', event => {
+      event.preventDefault();
+      publishClaimedShift().catch(error => setNotice('shift-dialog-notice', error.message, 'error'));
+    });
     byId('save-server-status').addEventListener('click', () => saveStatus().catch(error => setNotice('server-status-notice', error.message, 'error')));
+    byId('toggle-status-lock').addEventListener('click', () => toggleStatusLock().catch(error => setNotice('server-status-notice', error.message, 'error')));
+    byId('status-lock-form').addEventListener('submit', event => {
+      event.preventDefault();
+      submitStatusLock().catch(error => setNotice('status-lock-notice', error.message, 'error'));
+    });
     byId('new-section').addEventListener('click', () => openSection());
     byId('new-vehicle').addEventListener('click', () => openVehicle());
     byId('vehicle-section-filter').addEventListener('change', event => {

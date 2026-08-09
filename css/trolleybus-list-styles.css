@@ -3,3 +3,12 @@ body{overflow-x:hidden}*{margin:0;padding:0;box-sizing:border-box}:root{--primar
 .vehicle-database-state p { margin: 0; }
 .vehicle-database-state--error { border-color: #b84a52; color: #d86b72; }
 .vehicle-database-retry { min-height: 42px; padding: 9px 16px; border: 1px solid var(--accent-color, #4da3f5); border-radius: 4px; background: var(--accent-color, #4da3f5); color: #fff; cursor: pointer; font: inherit; font-weight: 800; }
+.vehicle-category { margin: 0 0 54px; }
+.vehicle-category-title { margin: 0 0 24px; padding: 0 0 10px 16px; border-bottom: 1px solid var(--border-color); border-left: 4px solid var(--accent-color); color: var(--heading-color); font-size: 1.9rem; letter-spacing: 0; }
+.vehicle-category-sections { padding-left: 28px; }
+.vehicle-category-sections .table-block { position: relative; margin-bottom: 34px; }
+.vehicle-category-sections .table-block > h2 { text-align: left; font-size: 1.35rem; }
+@media (max-width: 640px) {
+  .vehicle-category-title { font-size: 1.45rem; }
+  .vehicle-category-sections { padding-left: 12px; }
+}
