@@ -128,8 +128,13 @@
 
   function canRegister(vehicle) {
     const status = String(vehicle?.status || '').trim().toLocaleLowerCase('ru-RU');
+    const assignments = [vehicle?.assignmentRu, vehicle?.assignmentEn, vehicle?.assignment]
+      .map(value => String(value || '').trim().toLocaleLowerCase('ru-RU'))
+      .filter(Boolean);
+    const serviceAssignment = assignments.some(value => /^(?:служебный|service(?: vehicle)?)$/i.test(value));
     return ['эксплуатируется', 'in service', 'in operation', 'operational'].includes(status)
-      && assignedDriverCount(vehicle?.drivers) < 3;
+      && assignedDriverCount(vehicle?.drivers) < 3
+      && !serviceAssignment;
   }
 
   function element(tag, className, content) {

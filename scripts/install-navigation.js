@@ -246,7 +246,7 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-      await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260809c') });
+      await loadAsset('script', { src: siteUrl('scripts/vehicle-list-database.js?v=20260811a') });
   }
 
   function boot() {
