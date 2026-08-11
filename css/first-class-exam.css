@@ -2,6 +2,16 @@
   width: min(1120px, 100%);
 }
 
+.first-class-exam-page #first-class-details.trp-scroll-reveal,
+.first-class-exam-page #first-class-details .trp-scroll-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  transition-delay: 0ms !important;
+  animation: none !important;
+  will-change: auto !important;
+}
+
 .first-class-exam-page .personnel-heading p {
   max-width: 820px;
   color: #aeb4bc;

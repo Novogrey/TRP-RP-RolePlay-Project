@@ -16,7 +16,8 @@
     statusProfile: null,
     vehicleDatabase: { sections: [], vehicles: [] },
     vehicleSectionFilter: '',
-    decisionScores: null
+    decisionScores: null,
+    decisionAutomaticScores: null
   };
   const copy = {
     ru: {
@@ -335,20 +336,32 @@
       : displayName;
   }
 
-  function collectScores(article) {
+  function collectScoreInputs(article, selector, datasetKey) {
     const scores = {};
-    for (const input of article.querySelectorAll('[data-score-question]')) {
+    for (const input of article.querySelectorAll(selector)) {
       if (input.value.trim() === '' || !input.checkValidity()) {
         input.focus();
         return null;
       }
-      scores[input.dataset.scoreQuestion] = Number(input.value);
+      scores[input.dataset[datasetKey]] = Number(input.value);
     }
     return scores;
   }
 
+  function collectScores(article) {
+    return collectScoreInputs(article, '[data-score-question]', 'scoreQuestion');
+  }
+
+  function collectAutomaticScores(article) {
+    return collectScoreInputs(article, '[data-automatic-score-question]', 'automaticScoreQuestion');
+  }
+
   function updateExamScoreSummary(article, application) {
-    const automatic = Number(application.automaticScore || 0);
+    const automaticInputs = [...article.querySelectorAll('[data-automatic-score-question]')];
+    const automatic = automaticInputs.length
+      ? automaticInputs.reduce((sum, input) => sum + (Number.isFinite(Number(input.value)) ? Number(input.value) : 0), 0)
+      : Number(application.automaticScore || 0);
+    const automaticMaximum = (application.automaticQuestions || []).reduce((sum, question) => sum + Number(question.maximumScore || 0), 0);
     let manual = 0;
     article.querySelectorAll('[data-score-question]').forEach(input => {
       const value = Number(input.value);
@@ -357,11 +370,13 @@
     const automaticNode = article.querySelector('[data-exam-score="automatic"]');
     const manualNode = article.querySelector('[data-exam-score="manual"]');
     const totalNode = article.querySelector('[data-exam-score="total"]');
-    if (automaticNode) automaticNode.textContent = `${automatic}/${(application.automaticQuestions || []).reduce((sum, question) => sum + Number(question.maximumScore || 0), 0)}`;
+    if (automaticNode) automaticNode.textContent = `${automatic}/${automaticMaximum}`;
     if (manualNode) manualNode.textContent = String(manual);
     if (totalNode) totalNode.textContent = `${automatic + manual}/${application.maximumScore}`;
     const acceptButton = article.querySelector('[data-exam-accept]');
     if (acceptButton) acceptButton.disabled = automatic + manual < Number(application.passingScore || 0);
+    const automaticReviewSummary = article.querySelector('[data-automatic-review-summary]');
+    if (automaticReviewSummary) automaticReviewSummary.textContent = `${t('automaticReview')} · ${automatic}/${automaticMaximum}`;
   }
 
   function examScoreSummary(application) {
@@ -383,11 +398,12 @@
     return summary;
   }
 
-  function automaticReview(application) {
+  function automaticReview(application, article) {
     const disclosure = document.createElement('details');
     disclosure.className = 'admin-auto-review';
     const summary = document.createElement('summary');
     summary.textContent = `${t('automaticReview')} · ${application.automaticScore}/${(application.automaticQuestions || []).reduce((sum, question) => sum + Number(question.maximumScore || 0), 0)}`;
+    summary.dataset.automaticReviewSummary = 'true';
     const intro = document.createElement('p');
     intro.className = 'admin-auto-review-intro';
     intro.textContent = t('automaticReviewText');
@@ -401,7 +417,7 @@
       const title = document.createElement('strong');
       title.textContent = `${question.id.toUpperCase()}. ${question.label}`;
       const badge = document.createElement('span');
-      badge.textContent = `${question.passed ? t('passedAutocheck') : t('failedAutocheck')} · ${question.score}/${question.maximumScore}`;
+      badge.textContent = `${question.passed ? t('passedAutocheck') : t('failedAutocheck')} · ${question.computedScore ?? question.score}/${question.maximumScore}`;
       head.append(title, badge);
       item.append(head);
       if (question.image) {
@@ -417,14 +433,14 @@
         detail(t('answer'), question.answer),
         detail(t('expectedAnswer'), question.expectedAnswer)
       );
-      item.append(answerGrid);
+      item.append(answerGrid, scoreControl(question, application, article, 'automatic'));
       list.append(item);
     });
     disclosure.append(summary, intro, list);
     return disclosure;
   }
 
-  function scoreControl(question, application, article) {
+  function scoreControl(question, application, article, kind = 'manual') {
     const field = document.createElement('label');
     field.className = 'admin-score-field';
     const label = document.createElement('span');
@@ -441,7 +457,8 @@
     input.max = String(question.maximumScore);
     input.step = '1';
     input.required = true;
-    input.dataset.scoreQuestion = question.id;
+    if (kind === 'automatic') input.dataset.automaticScoreQuestion = question.id;
+    else input.dataset.scoreQuestion = question.id;
     input.value = question.score == null ? '' : String(question.score);
     input.placeholder = '0';
     input.setAttribute('aria-label', `${t('score')} 0-${question.maximumScore}`);
@@ -540,7 +557,7 @@
             detail(t('stage1ReviewedAt'), application.stage1ReviewedAt ? new Date(application.stage1ReviewedAt).toLocaleString(state.language) : '—')
           );
         }
-        article.append(examScoreSummary(application), automaticReview(application), manualReview(application, article));
+        article.append(examScoreSummary(application), automaticReview(application, article), manualReview(application, article));
         updateExamScoreSummary(article, application);
       }
 
@@ -573,7 +590,8 @@
 
   function openDecision(application, decision, article) {
     state.decisionScores = application.category === 'first_class' ? collectScores(article) : null;
-    if (application.category === 'first_class' && !state.decisionScores) return;
+    state.decisionAutomaticScores = application.category === 'first_class' ? collectAutomaticScores(article) : null;
+    if (application.category === 'first_class' && (!state.decisionScores || !state.decisionAutomaticScores)) return;
     byId('decision-application-id').value = application.id;
     byId('decision-category').value = application.category;
     byId('decision-value').value = decision;
@@ -594,9 +612,11 @@
       decision,
       reason: note,
       details: note,
-      ...(state.decisionScores ? { scores: state.decisionScores } : {})
+      ...(state.decisionScores ? { scores: state.decisionScores } : {}),
+      ...(state.decisionAutomaticScores ? { automaticScores: state.decisionAutomaticScores } : {})
     }));
     state.decisionScores = null;
+    state.decisionAutomaticScores = null;
     byId('decision-dialog').close();
     setNotice('admin-notice', t('decisionSaved'), 'success');
     await refreshApplications();
@@ -604,11 +624,13 @@
 
   async function submitScores(application, article) {
     const scores = collectScores(article);
-    if (!scores) return;
+    const automaticScores = collectAutomaticScores(article);
+    if (!scores || !automaticScores) return;
     await post(payload('admin-applications-decision', {
       applicationId: application.id,
       category: application.category,
-      scores
+      scores,
+      automaticScores
     }));
     setNotice('admin-notice', application.stage === 'stage2_review' ? t('scoresSaved') : t('decisionSaved'), 'success');
     await refreshApplications();

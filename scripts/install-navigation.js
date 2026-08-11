@@ -215,7 +215,7 @@
     await Promise.all([
       loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/form-exam-styles.css?v=20260808') }),
       loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/personnel-applications.css?v=20260808') }),
-      loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/first-class-exam.css?v=20260808') })
+      loadAsset('link', { rel: 'stylesheet', href: siteUrl('css/first-class-exam.css?v=20260811a') })
     ]);
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
