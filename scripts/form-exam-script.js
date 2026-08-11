@@ -793,9 +793,10 @@ function initTrainingApplicationForm() {
 
   function showStatus(message, kind = "") {
     const element = byId("application-status");
+    const formatted = window.TrpApplicationAccess?.formatMessage(message) || String(message || "");
     element.hidden = false;
     element.className = `application-status ${kind}`.trim();
-    element.textContent = message;
+    element.textContent = formatted;
   }
 
   function clearStatus() {

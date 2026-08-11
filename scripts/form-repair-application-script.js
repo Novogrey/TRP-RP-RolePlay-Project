@@ -135,9 +135,13 @@ function initRepairApplicationForm() {
   }
 
   function localizeDiscordTimestamps(message) {
+    if (window.TrpApplicationAccess?.formatMessage) {
+      return window.TrpApplicationAccess.formatMessage(message);
+    }
     return String(message || "")
-      .replace(/<t:(\d+):([FR])>/g, (_, seconds, style) => {
+      .replace(/<t:(\d+)(?::([tTdDfFR]))?>/g, (token, seconds, style = "f") => {
         const date = new Date(Number(seconds) * 1000);
+        if (!Number.isFinite(date.getTime())) return token;
         if (style === "R") {
           const difference = date.getTime() - Date.now();
           const units = Math.abs(difference) >= 86_400_000

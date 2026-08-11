@@ -41,9 +41,12 @@
 
   function status(message, kind = '') {
     const node = document.getElementById('first-class-status');
-    node.hidden = !message;
+    const formatted = window.TrpApplicationAccess?.formatMessage
+      ? window.TrpApplicationAccess.formatMessage(message)
+      : String(message || '');
+    node.hidden = !formatted;
     node.className = `application-status ${kind}`.trim();
-    node.textContent = message || '';
+    node.textContent = formatted;
   }
 
   function progress(step) {

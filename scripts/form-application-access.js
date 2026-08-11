@@ -1,22 +1,29 @@
 function formatApplicationAccessMessage(message) {
   const language = localStorage.getItem("language") === "en" ? "en" : "ru";
   return String(message || "")
-    .replace(/<t:(\d+):([FR])>/g, (_, seconds, style) => {
+    .replace(/<t:(\d+)(?::([tTdDfFR]))?>/g, (token, seconds, style = "f") => {
       const date = new Date(Number(seconds) * 1000);
+      if (!Number.isFinite(date.getTime())) return token;
       if (style === "R") {
         const difference = date.getTime() - Date.now();
-        const units = Math.abs(difference) >= 86_400_000
-          ? ["day", 86_400_000]
-          : Math.abs(difference) >= 3_600_000
-            ? ["hour", 3_600_000]
-            : ["minute", 60_000];
+        const units = Math.abs(difference) >= 31_536_000_000 ? ["year", 31_536_000_000]
+          : Math.abs(difference) >= 2_592_000_000 ? ["month", 2_592_000_000]
+            : Math.abs(difference) >= 604_800_000 ? ["week", 604_800_000]
+              : Math.abs(difference) >= 86_400_000 ? ["day", 86_400_000]
+                : Math.abs(difference) >= 3_600_000 ? ["hour", 3_600_000]
+                  : Math.abs(difference) >= 60_000 ? ["minute", 60_000]
+                    : ["second", 1_000];
         return new Intl.RelativeTimeFormat(language === "ru" ? "ru-RU" : "en", { numeric: "auto" })
           .format(Math.round(difference / units[1]), units[0]);
       }
-      return new Intl.DateTimeFormat(language === "ru" ? "ru-RU" : "en-GB", {
-        dateStyle: "long",
-        timeStyle: "short"
-      }).format(date);
+      const options = style === "t" ? { hour: "2-digit", minute: "2-digit" }
+        : style === "T" ? { hour: "2-digit", minute: "2-digit", second: "2-digit" }
+          : style === "d" ? { day: "2-digit", month: "2-digit", year: "numeric" }
+            : style === "D" ? { day: "numeric", month: "long", year: "numeric" }
+              : style === "F"
+                ? { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }
+                : { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" };
+      return new Intl.DateTimeFormat(language === "ru" ? "ru-RU" : "en-GB", options).format(date);
     })
     .replaceAll("**", "");
 }

@@ -94,9 +94,12 @@
   function showStatus(message, kind = '') {
     const status = document.getElementById('personnel-status');
     if (!status) return;
-    status.hidden = !message;
+    const formatted = window.TrpApplicationAccess?.formatMessage
+      ? window.TrpApplicationAccess.formatMessage(message)
+      : String(message || '');
+    status.hidden = !formatted;
     status.className = `application-status ${kind}`.trim();
-    status.textContent = message || '';
+    status.textContent = formatted;
   }
 
   function setProgress(step) {
