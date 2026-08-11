@@ -145,9 +145,10 @@ function initVehicleAssignmentForm() {
 
   function showStatus(message, type = "info") {
     const status = byId("vehicle-assignment-status");
+    const formatted = window.TrpApplicationAccess?.formatMessage(message) || String(message || "");
     status.hidden = false;
     status.className = `application-status ${type === "info" ? "" : type}`.trim();
-    status.textContent = message;
+    status.textContent = formatted;
   }
 
   function clearStatus() {

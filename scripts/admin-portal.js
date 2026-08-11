@@ -15,7 +15,8 @@
     shiftReservation: null,
     statusProfile: null,
     vehicleDatabase: { sections: [], vehicles: [] },
-    vehicleSectionFilter: ''
+    vehicleSectionFilter: '',
+    decisionScores: null
   };
   const copy = {
     ru: {
@@ -56,7 +57,11 @@
       selectModel: 'Выберите модель', selectStatus: 'Выберите статус', selectLivery: 'Выберите окраску',
       liveriesUnavailable: 'Для этой модели окраски недоступны.', duplicateBoard: 'Этот бортовой номер уже используется.',
       duplicateFactory: 'Этот заводской номер уже используется.',
-      currentScore: 'Автоматические баллы', answer: 'Ответ', score: 'Баллы', accessDenied: 'Раздел недоступен для ваших ролей.',
+      currentScore: 'Автоматические баллы', manualScore: 'Баллы за развёрнутые ответы', totalScore: 'Итоговый результат',
+      answer: 'Ответ участника', expectedAnswer: 'Правильный ответ', score: 'Баллы', accessDenied: 'Раздел недоступен для ваших ролей.',
+      automaticReview: 'Проверка автоматических ответов', automaticReviewText: 'Сверьте ответ участника, правильный ответ и начисленные системой баллы.',
+      passedAutocheck: 'Засчитано', failedAutocheck: 'Не засчитано', stage1Reviewer: 'Первый этап проверил',
+      stage1ReviewedAt: 'Первый этап завершён', saveScores: 'Сохранить баллы', scoresSaved: 'Баллы и итоговый результат сохранены.',
       show: 'Показать', hide: 'Скрыть',
       availableShifts: 'Доступные даты', availableShiftsText: 'Даты берутся из того же графика, что и команда /график-смен. Создание доступно только сотрудникам с правом ДТУ.',
       availableOffers: 'Можно взять', upcomingRpSessions: 'Предстоящие РП-сессии', previous: 'Назад', next: 'Далее',
@@ -109,7 +114,11 @@
       selectModel: 'Select a model', selectStatus: 'Select a status', selectLivery: 'Select a livery',
       liveriesUnavailable: 'No liveries are available for this model.', duplicateBoard: 'This fleet number is already in use.',
       duplicateFactory: 'This factory number is already in use.',
-      currentScore: 'Automatic score', answer: 'Answer', score: 'Score', accessDenied: 'This section is unavailable for your roles.',
+      currentScore: 'Automatic score', manualScore: 'Extended-answer score', totalScore: 'Total score',
+      answer: 'Participant answer', expectedAnswer: 'Correct answer', score: 'Score', accessDenied: 'This section is unavailable for your roles.',
+      automaticReview: 'Automatic answer review', automaticReviewText: 'Compare the participant answer, correct answer, and points awarded by the system.',
+      passedAutocheck: 'Accepted', failedAutocheck: 'Not accepted', stage1Reviewer: 'First stage reviewed by',
+      stage1ReviewedAt: 'First stage completed', saveScores: 'Save scores', scoresSaved: 'Scores and total result saved.',
       show: 'Show', hide: 'Hide',
       availableShifts: 'Available dates', availableShiftsText: 'Dates come from the same schedule as /shift-schedule. Creation is available only to employees with DTC permission.',
       availableOffers: 'Available to claim', upcomingRpSessions: 'Upcoming RP sessions', previous: 'Previous', next: 'Next',
@@ -151,7 +160,7 @@
   function setNotice(id, message, type) {
     const element = byId(id);
     if (!element) return;
-    element.textContent = message || '';
+    element.textContent = formatDiscordTimestamps(message || '');
     element.classList.toggle('is-error', type === 'error');
     element.classList.toggle('is-success', type === 'success');
   }
@@ -260,13 +269,44 @@
     }
   }
 
+  function formatRelativeTime(date) {
+    const seconds = Math.round((date.getTime() - Date.now()) / 1000);
+    const units = [
+      ['year', 31536000],
+      ['month', 2592000],
+      ['week', 604800],
+      ['day', 86400],
+      ['hour', 3600],
+      ['minute', 60],
+      ['second', 1]
+    ];
+    const [unit, divisor] = units.find(([, amount]) => Math.abs(seconds) >= amount) || units[units.length - 1];
+    return new Intl.RelativeTimeFormat(state.language, { numeric: 'auto' }).format(Math.round(seconds / divisor), unit);
+  }
+
+  function formatDiscordTimestamps(value) {
+    return String(value ?? '').replace(/<t:(\d+)(?::([tTdDfFR]))?>/g, (token, rawSeconds, style = 'f') => {
+      const date = new Date(Number(rawSeconds) * 1000);
+      if (!Number.isFinite(date.getTime())) return token;
+      if (style === 'R') return formatRelativeTime(date);
+      const options = style === 't' ? { hour: '2-digit', minute: '2-digit' }
+        : style === 'T' ? { hour: '2-digit', minute: '2-digit', second: '2-digit' }
+          : style === 'd' ? { day: '2-digit', month: '2-digit', year: 'numeric' }
+            : style === 'D' ? { day: 'numeric', month: 'long', year: 'numeric' }
+              : style === 'F'
+                ? { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+                : { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Intl.DateTimeFormat(state.language, options).format(date);
+    });
+  }
+
   function detail(label, value) {
     const item = document.createElement('div');
     item.className = 'admin-detail';
     const name = document.createElement('span');
     name.textContent = label;
     const content = document.createElement('strong');
-    content.textContent = value == null || value === '' ? '—' : String(value);
+    content.textContent = value == null || value === '' ? '—' : formatDiscordTimestamps(value);
     item.append(name, content);
     return item;
   }
@@ -285,6 +325,175 @@
       || application.applicant?.discordUsername
       || application.applicant?.robloxUsername
       || '—';
+  }
+
+  function reviewerName(reviewer) {
+    if (!reviewer) return '—';
+    const displayName = reviewer.displayName || reviewer.discordUsername || reviewer.userId || '—';
+    return reviewer.discordUsername && reviewer.discordUsername !== displayName
+      ? `${displayName} (@${reviewer.discordUsername})`
+      : displayName;
+  }
+
+  function collectScores(article) {
+    const scores = {};
+    for (const input of article.querySelectorAll('[data-score-question]')) {
+      if (input.value.trim() === '' || !input.checkValidity()) {
+        input.focus();
+        return null;
+      }
+      scores[input.dataset.scoreQuestion] = Number(input.value);
+    }
+    return scores;
+  }
+
+  function updateExamScoreSummary(article, application) {
+    const automatic = Number(application.automaticScore || 0);
+    let manual = 0;
+    article.querySelectorAll('[data-score-question]').forEach(input => {
+      const value = Number(input.value);
+      if (Number.isFinite(value)) manual += value;
+    });
+    const automaticNode = article.querySelector('[data-exam-score="automatic"]');
+    const manualNode = article.querySelector('[data-exam-score="manual"]');
+    const totalNode = article.querySelector('[data-exam-score="total"]');
+    if (automaticNode) automaticNode.textContent = `${automatic}/${(application.automaticQuestions || []).reduce((sum, question) => sum + Number(question.maximumScore || 0), 0)}`;
+    if (manualNode) manualNode.textContent = String(manual);
+    if (totalNode) totalNode.textContent = `${automatic + manual}/${application.maximumScore}`;
+    const acceptButton = article.querySelector('[data-exam-accept]');
+    if (acceptButton) acceptButton.disabled = automatic + manual < Number(application.passingScore || 0);
+  }
+
+  function examScoreSummary(application) {
+    const summary = document.createElement('div');
+    summary.className = 'admin-exam-score-summary';
+    [
+      ['automatic', t('currentScore')],
+      ['manual', t('manualScore')],
+      ['total', t('totalScore')]
+    ].forEach(([key, label]) => {
+      const item = document.createElement('div');
+      const name = document.createElement('span');
+      const value = document.createElement('strong');
+      name.textContent = label;
+      value.dataset.examScore = key;
+      item.append(name, value);
+      summary.append(item);
+    });
+    return summary;
+  }
+
+  function automaticReview(application) {
+    const disclosure = document.createElement('details');
+    disclosure.className = 'admin-auto-review';
+    const summary = document.createElement('summary');
+    summary.textContent = `${t('automaticReview')} · ${application.automaticScore}/${(application.automaticQuestions || []).reduce((sum, question) => sum + Number(question.maximumScore || 0), 0)}`;
+    const intro = document.createElement('p');
+    intro.className = 'admin-auto-review-intro';
+    intro.textContent = t('automaticReviewText');
+    const list = document.createElement('div');
+    list.className = 'admin-auto-question-list';
+    (application.automaticQuestions || []).forEach(question => {
+      const item = document.createElement('article');
+      item.className = `admin-auto-question ${question.passed ? 'is-passed' : 'is-failed'}`;
+      const head = document.createElement('div');
+      head.className = 'admin-auto-question-head';
+      const title = document.createElement('strong');
+      title.textContent = `${question.id.toUpperCase()}. ${question.label}`;
+      const badge = document.createElement('span');
+      badge.textContent = `${question.passed ? t('passedAutocheck') : t('failedAutocheck')} · ${question.score}/${question.maximumScore}`;
+      head.append(title, badge);
+      item.append(head);
+      if (question.image) {
+        const image = document.createElement('img');
+        image.src = question.image;
+        image.alt = question.label;
+        image.loading = 'lazy';
+        item.append(image);
+      }
+      const answerGrid = document.createElement('div');
+      answerGrid.className = 'admin-answer-comparison';
+      answerGrid.append(
+        detail(t('answer'), question.answer),
+        detail(t('expectedAnswer'), question.expectedAnswer)
+      );
+      item.append(answerGrid);
+      list.append(item);
+    });
+    disclosure.append(summary, intro, list);
+    return disclosure;
+  }
+
+  function scoreControl(question, application, article) {
+    const field = document.createElement('label');
+    field.className = 'admin-score-field';
+    const label = document.createElement('span');
+    label.textContent = t('score');
+    const control = document.createElement('span');
+    control.className = 'admin-score-control';
+    const decrement = document.createElement('button');
+    decrement.type = 'button';
+    decrement.textContent = '−';
+    decrement.title = state.language === 'ru' ? 'Уменьшить балл' : 'Decrease score';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = '0';
+    input.max = String(question.maximumScore);
+    input.step = '1';
+    input.required = true;
+    input.dataset.scoreQuestion = question.id;
+    input.value = question.score == null ? '' : String(question.score);
+    input.placeholder = '0';
+    input.setAttribute('aria-label', `${t('score')} 0-${question.maximumScore}`);
+    const maximum = document.createElement('span');
+    maximum.className = 'admin-score-maximum';
+    maximum.textContent = `/ ${question.maximumScore}`;
+    const increment = document.createElement('button');
+    increment.type = 'button';
+    increment.textContent = '+';
+    increment.title = state.language === 'ru' ? 'Увеличить балл' : 'Increase score';
+    const change = delta => {
+      const current = input.value === '' ? 0 : Number(input.value);
+      input.value = String(Math.min(Number(input.max), Math.max(Number(input.min), current + delta)));
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    decrement.addEventListener('click', () => change(-1));
+    increment.addEventListener('click', () => change(1));
+    input.addEventListener('input', () => updateExamScoreSummary(article, application));
+    control.append(decrement, input, maximum, increment);
+    field.append(label, control);
+    return field;
+  }
+
+  function manualReview(application, article) {
+    const questions = document.createElement('div');
+    questions.className = 'admin-list admin-manual-review';
+    (application.manualQuestions || []).forEach(question => {
+      const block = document.createElement('article');
+      block.className = 'admin-manual-question';
+      const header = document.createElement('div');
+      header.className = 'admin-manual-question-head';
+      const label = document.createElement('strong');
+      label.textContent = `${question.id.toUpperCase()}. ${question.label}`;
+      const maximum = document.createElement('span');
+      maximum.textContent = `0–${question.maximumScore}`;
+      header.append(label, maximum);
+      block.append(header);
+      if (question.image) {
+        const image = document.createElement('img');
+        image.className = 'admin-question-image';
+        image.src = question.image;
+        image.alt = question.label;
+        image.loading = 'lazy';
+        block.append(image);
+      }
+      const answer = document.createElement('p');
+      answer.className = 'admin-question-answer';
+      answer.textContent = `${t('answer')}: ${question.answer}`;
+      block.append(answer, scoreControl(question, application, article));
+      questions.append(block);
+    });
+    return questions;
   }
 
   function renderApplications() {
@@ -324,38 +533,32 @@
       (application.fields || []).forEach(field => details.append(detail(field.label, field.value)));
       article.append(head, details);
 
+      if (application.category === 'first_class') {
+        if (application.stage === 'stage2_review') {
+          details.append(
+            detail(t('stage1Reviewer'), reviewerName(application.stage1Reviewer)),
+            detail(t('stage1ReviewedAt'), application.stage1ReviewedAt ? new Date(application.stage1ReviewedAt).toLocaleString(state.language) : '—')
+          );
+        }
+        article.append(examScoreSummary(application), automaticReview(application), manualReview(application, article));
+        updateExamScoreSummary(article, application);
+      }
+
       if (application.stage === 'stage1_review') {
-        const questions = document.createElement('div');
-        questions.className = 'admin-list';
-        (application.manualQuestions || []).forEach(question => {
-          const block = document.createElement('div');
-          block.className = 'admin-manual-question';
-          const label = document.createElement('strong');
-          label.textContent = question.label;
-          const answer = document.createElement('p');
-          answer.textContent = `${t('answer')}: ${question.answer}`;
-          const scoreRow = document.createElement('div');
-          scoreRow.className = 'admin-score-row';
-          const info = document.createElement('span');
-          info.textContent = `${t('currentScore')}: ${application.automaticScore}/${application.maximumScore}`;
-          const input = document.createElement('input');
-          input.type = 'number';
-          input.min = '0';
-          input.max = String(question.maximumScore);
-          input.required = true;
-          input.dataset.scoreQuestion = question.id;
-          input.value = question.score == null ? '' : String(question.score);
-          input.setAttribute('aria-label', `${t('score')} 0-${question.maximumScore}`);
-          scoreRow.append(info, input);
-          block.append(label, answer, scoreRow);
-          questions.append(block);
-        });
-        article.append(questions);
         actions.append(button(t('sendScores'), 'admin-primary-button', () => submitScores(application, article)));
+      } else if (application.category === 'first_class') {
+        const acceptButton = button(t('accept'), 'admin-primary-button', () => openDecision(application, 'accepted', article));
+        acceptButton.dataset.examAccept = 'true';
+        actions.append(
+          button(t('saveScores'), 'admin-secondary-button', () => submitScores(application, article)),
+          acceptButton,
+          button(t('reject'), 'admin-danger-button', () => openDecision(application, 'rejected', article))
+        );
+        updateExamScoreSummary(article, application);
       } else {
         actions.append(
-          button(t('accept'), 'admin-primary-button', () => openDecision(application, 'accepted')),
-          button(t('reject'), 'admin-danger-button', () => openDecision(application, 'rejected'))
+          button(t('accept'), 'admin-primary-button', () => openDecision(application, 'accepted', article)),
+          button(t('reject'), 'admin-danger-button', () => openDecision(application, 'rejected', article))
         );
       }
       list.append(article);
@@ -368,7 +571,9 @@
     renderApplications();
   }
 
-  function openDecision(application, decision) {
+  function openDecision(application, decision, article) {
+    state.decisionScores = application.category === 'first_class' ? collectScores(article) : null;
+    if (application.category === 'first_class' && !state.decisionScores) return;
     byId('decision-application-id').value = application.id;
     byId('decision-category').value = application.category;
     byId('decision-value').value = decision;
@@ -388,25 +593,24 @@
       category: byId('decision-category').value,
       decision,
       reason: note,
-      details: note
+      details: note,
+      ...(state.decisionScores ? { scores: state.decisionScores } : {})
     }));
+    state.decisionScores = null;
     byId('decision-dialog').close();
     setNotice('admin-notice', t('decisionSaved'), 'success');
     await refreshApplications();
   }
 
   async function submitScores(application, article) {
-    const scores = {};
-    for (const input of article.querySelectorAll('[data-score-question]')) {
-      if (!input.value) return input.focus();
-      scores[input.dataset.scoreQuestion] = Number(input.value);
-    }
+    const scores = collectScores(article);
+    if (!scores) return;
     await post(payload('admin-applications-decision', {
       applicationId: application.id,
       category: application.category,
       scores
     }));
-    setNotice('admin-notice', t('decisionSaved'), 'success');
+    setNotice('admin-notice', application.stage === 'stage2_review' ? t('scoresSaved') : t('decisionSaved'), 'success');
     await refreshApplications();
   }
 

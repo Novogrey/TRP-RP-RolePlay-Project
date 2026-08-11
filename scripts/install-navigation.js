@@ -206,7 +206,8 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/personnel-applications.js?v=20260808') });
+    await loadAsset('script', { src: siteUrl('scripts/form-application-access.js?v=20260811a') });
+    await loadAsset('script', { src: siteUrl('scripts/personnel-applications.js?v=20260811a') });
   }
 
   async function loadFirstClassExamPage() {
@@ -219,7 +220,8 @@
     if (!window.TRP_APPLICATIONS_API_URL) {
       await loadAsset('script', { src: siteUrl('scripts/training-applications-config.js?v=20260808c') });
     }
-    await loadAsset('script', { src: siteUrl('scripts/first-class-exam.js?v=20260808') });
+    await loadAsset('script', { src: siteUrl('scripts/form-application-access.js?v=20260811a') });
+    await loadAsset('script', { src: siteUrl('scripts/first-class-exam.js?v=20260811a') });
   }
 
   async function loadShiftCalendarPage() {
