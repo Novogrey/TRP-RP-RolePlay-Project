@@ -1,7 +1,7 @@
 (function loadSiteAnnouncements() {
   'use strict';
 
-  const FALLBACK_API_URL = 'https://script.google.com/macros/s/AKfycbwwamyT5tOTBS9jwDpIAXlhHljdfDNu292BdjXukCAVwRzER1-UZmxoG5HnABsVIBmx/exec';
+  const FALLBACK_API_URL = 'https://script.google.com/macros/s/AKfycbx6VZxf9DEQxZTjYrNPZ9nUio_wfTRECe7CExkOfHdnmHLruJul8658-wg72kQFzIWZ/exec';
   const REFRESH_INTERVAL_MS = 60 * 1000;
   let loading = false;
 
