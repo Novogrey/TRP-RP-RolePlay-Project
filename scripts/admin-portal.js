@@ -307,7 +307,11 @@
     const name = document.createElement('span');
     name.textContent = label;
     const content = document.createElement('strong');
-    content.textContent = value == null || value === '' ? '—' : formatDiscordTimestamps(value);
+    const displayValue = value == null || value === '' ? '—' : formatDiscordTimestamps(value);
+    content.textContent = displayValue;
+    if (String(displayValue).length > 80 || String(displayValue).includes('\n')) {
+      item.classList.add('admin-detail--wide');
+    }
     item.append(name, content);
     return item;
   }

@@ -68,8 +68,9 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .admin-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--admin-border); border: 1px solid var(--admin-border); }
 .admin-detail { min-width: 0; padding: 11px; background: var(--admin-surface-2); }
+.admin-detail--wide { grid-column: 1 / -1; }
 .admin-detail span { display: block; margin-bottom: 4px; color: var(--admin-muted); font-size: 11px; text-transform: uppercase; }
-.admin-detail strong { overflow-wrap: anywhere; }
+.admin-detail strong { white-space: pre-wrap; overflow-wrap: anywhere; }
 .admin-exam-score-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; border: 1px solid var(--admin-border); background: var(--admin-border); }
 .admin-exam-score-summary > div { display: grid; gap: 5px; padding: 13px 14px; background: var(--admin-surface-2); }
 .admin-exam-score-summary span { color: var(--admin-muted); font-size: 11px; font-weight: 750; text-transform: uppercase; }
