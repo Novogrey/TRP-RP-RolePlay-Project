@@ -1,5 +1,5 @@
 (() => {
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwwamyT5tOTBS9jwDpIAXlhHljdfDNu292BdjXukCAVwRzER1-UZmxoG5HnABsVIBmx/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx6VZxf9DEQxZTjYrNPZ9nUio_wfTRECe7CExkOfHdnmHLruJul8658-wg72kQFzIWZ/exec';
   const copy = {
     en: {
       home: 'Home', privacy: 'Privacy Policy', terms: 'Terms of Service',
