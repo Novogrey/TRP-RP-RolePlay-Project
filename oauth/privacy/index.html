@@ -55,9 +55,9 @@
             <li>temporary security data required to complete the OAuth flow.</li>
           </ul>
           <p>
-            The application requests only the Roblox OAuth scopes <strong>openid</strong> and
-            <strong>profile</strong>. It does not request a Roblox password, payment information, or
-            access to private Roblox messages.
+            The application requests only the Discord OAuth scope <strong>identify</strong> and the
+            Roblox OAuth scopes <strong>openid</strong> and <strong>profile</strong>. It does not
+            request passwords, payment information, private messages, or server-management access.
           </p>
         </section>
 
@@ -76,9 +76,9 @@
         <section class="legal-section">
           <h2>4. OAuth Tokens</h2>
           <p>
-            Roblox access and refresh tokens are used only to retrieve the authorized account
-            information. They are not stored in the TRP RP database or in Google Sheets and are
-            revoked after the verification data has been transferred to the bot.
+            Discord and Roblox OAuth tokens are used only to retrieve the account identities needed
+            for the current verification. They are not stored in the TRP RP database or in Google
+            Sheets and are revoked after the verification data has been transferred to the bot.
           </p>
         </section>
 
@@ -154,4 +154,3 @@
     </main>
   </body>
 </html>
-
