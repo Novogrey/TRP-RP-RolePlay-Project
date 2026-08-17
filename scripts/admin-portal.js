@@ -64,7 +64,7 @@
       passedAutocheck: 'Засчитано', failedAutocheck: 'Не засчитано', stage1Reviewer: 'Первый этап проверил',
       stage1ReviewedAt: 'Первый этап завершён', saveScores: 'Сохранить баллы', scoresSaved: 'Баллы и итоговый результат сохранены.',
       show: 'Показать', hide: 'Скрыть',
-      availableShifts: 'Доступные даты', availableShiftsText: 'Даты берутся из того же графика, что и команда /график-смен. Создание доступно только сотрудникам с правом ДТУ.',
+      availableShifts: 'Доступные смены и РП-сессии', availableShiftsText: 'Записи берутся из того же графика, что и команда /график-смен. Получение доступно только сотрудникам с правом ДТУ.',
       availableOffers: 'Можно взять', upcomingRpSessions: 'Предстоящие РП-сессии', previous: 'Назад', next: 'Далее',
       takeShift: 'Взять', noShiftOffers: 'Свободных дат сейчас нет.', noRpSessions: 'Предстоящих РП-сессий нет.',
       page: 'Страница {page} из {total}', createScheduledEvent: 'Создание публикации', eventType: 'Тип события',
@@ -121,7 +121,7 @@
       passedAutocheck: 'Accepted', failedAutocheck: 'Not accepted', stage1Reviewer: 'First stage reviewed by',
       stage1ReviewedAt: 'First stage completed', saveScores: 'Save scores', scoresSaved: 'Scores and total result saved.',
       show: 'Show', hide: 'Hide',
-      availableShifts: 'Available dates', availableShiftsText: 'Dates come from the same schedule as /shift-schedule. Creation is available only to employees with DTC permission.',
+      availableShifts: 'Available shifts and RP sessions', availableShiftsText: 'Entries come from the same schedule as /shift-schedule. Claiming is available only to employees with DTC permission.',
       availableOffers: 'Available to claim', upcomingRpSessions: 'Upcoming RP sessions', previous: 'Previous', next: 'Next',
       takeShift: 'Claim', noShiftOffers: 'There are no available dates.', noRpSessions: 'There are no upcoming RP sessions.',
       page: 'Page {page} of {total}', createScheduledEvent: 'Create publication', eventType: 'Event type',
@@ -764,8 +764,9 @@
     } else {
       state.shiftOffers.forEach(offer => {
         const date = formatMoscowDate(offer.windowStartAt);
+        const eventType = offer.eventType === 'rp_session' ? t('rpSession') : t('regularShift');
         offers.append(shiftRow(
-          date,
+          `${eventType} · ${date}`,
           t('shiftDate').replace('{date}', date),
           button(t('takeShift'), 'admin-primary-button', () => claimShift(offer))
         ));
@@ -828,7 +829,8 @@
     const result = await post(payload('admin-shifts-claim', { offerId: offer.id }));
     state.shiftReservation = result.reservation;
     byId('shift-selected-date').textContent = `${t('shiftDate').replace('{date}', formatMoscowDate(result.offer.windowStartAt))} ${t('reservationUntil').replace('{time}', formatMoscowDate(result.reservation.expiresAt, true))}`;
-    byId('shift-event-type').value = 'shift';
+    byId('shift-event-type').value = result.offer.eventType === 'rp_session' ? 'rp_session' : 'shift';
+    byId('shift-event-type').disabled = true;
     byId('shift-language').value = state.language;
     byId('shift-start-time').value = '';
     byId('shift-end-time').value = '';

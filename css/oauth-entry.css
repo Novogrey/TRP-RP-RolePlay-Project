@@ -98,7 +98,7 @@ a { color: inherit; }
   inset: 0;
   background:
     linear-gradient(90deg, rgba(12, 15, 18, 0.98) 0%, rgba(12, 15, 18, 0.9) 48%, rgba(12, 15, 18, 0.48) 100%),
-    url("../images/background.webp") center / cover no-repeat;
+    image-set(url("../images/background.avif") type("image/avif"), url("../images/background.webp") type("image/webp")) center / cover no-repeat;
 }
 
 .hero-content {
@@ -276,6 +276,12 @@ footer {
 .footer-links a:hover { color: var(--text); }
 
 @media (max-width: 760px) {
+  .hero-backdrop {
+    background-image:
+      linear-gradient(90deg, rgba(12, 15, 18, 0.98) 0%, rgba(12, 15, 18, 0.9) 48%, rgba(12, 15, 18, 0.48) 100%),
+      url("../images/background-mobile.avif");
+  }
+
   .site-header {
     align-items: flex-start;
     padding: 12px 16px;
