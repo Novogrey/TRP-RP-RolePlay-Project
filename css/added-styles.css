@@ -62,11 +62,21 @@ a {
   align-items: center;
   overflow: hidden;
   color: #ffffff;
-  background: #21252b url('../images/background-light.webp') center 48% / cover no-repeat;
+  background: #21252b image-set(url('../images/background-light.avif') type('image/avif'), url('../images/background-light.webp') type('image/webp')) center 48% / cover no-repeat;
 }
 
 body.dark-mode .install-hero {
-  background-image: url('../images/background.webp');
+  background-image: image-set(url('../images/background.avif') type('image/avif'), url('../images/background.webp') type('image/webp'));
+}
+
+@media (max-width: 760px) {
+  .install-hero {
+    background-image: url('../images/background-light-mobile.avif');
+  }
+
+  body.dark-mode .install-hero {
+    background-image: url('../images/background-mobile.avif');
+  }
 }
 
 .install-hero-overlay {

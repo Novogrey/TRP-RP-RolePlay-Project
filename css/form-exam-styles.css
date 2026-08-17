@@ -55,7 +55,10 @@ body {
   padding: 0 20px;
 }
 .hero-events {
-  background-image: url("../images/background-events.webp");
+  background-image: image-set(
+    url("../images/background-events.avif") type("image/avif"),
+    url("../images/background-events.webp") type("image/webp")
+  );
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -734,6 +737,9 @@ body.dark-mode .calendar-wrapper iframe {
   border-top: 1px solid var(--border-color);
 }
 @media (max-width: 860px) {
+  .hero-events {
+    background-image: url("../images/background-events-mobile.avif");
+  }
   .hero-events-content h1 {
     font-size: 1.8rem;
   }
