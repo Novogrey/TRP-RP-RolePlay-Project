@@ -328,3 +328,7 @@ body.dark-mode .tbus-modal {
   }
 }
 @media (max-width:860px){.hero-list{background-image:url("../images/background-list-mobile.avif")}}
+.status[data-status="Аварийно-восстановительный ремонт"] {
+  background-color: #B4235A;
+  color: #fff;
+}
