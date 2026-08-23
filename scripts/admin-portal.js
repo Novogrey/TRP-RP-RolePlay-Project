@@ -145,12 +145,26 @@
     'Не эксплуатируется',
     'Выведен из эксплуатации / ожидание исключения',
     'Капитально-восстановительный ремонт',
+    'Аварийно-восстановительный ремонт',
     'Загружается',
     'Модернизация',
     'Списан',
     'Передан в другой город',
     'Местонахождение и судьба неизвестны'
   ];
+  const vehicleStatusCopy = Object.freeze({
+    'Эксплуатируется': 'In service',
+    'В ремонте': 'Under repair',
+    'Не эксплуатируется': 'Not in service',
+    'Выведен из эксплуатации / ожидание исключения': 'Withdrawn from service / awaiting removal',
+    'Капитально-восстановительный ремонт': 'Capital restoration repair',
+    'Аварийно-восстановительный ремонт': 'Emergency restoration repair',
+    'Загружается': 'Loading',
+    'Модернизация': 'Modernization',
+    'Списан': 'Decommissioned',
+    'Передан в другой город': 'Transferred to another city',
+    'Местонахождение и судьба неизвестны': 'Location and fate unknown'
+  });
 
   function maskIdentifier(identifier) {
     return /^TRP-RP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(identifier)
@@ -1119,7 +1133,7 @@
     ].filter(Boolean))].sort((left, right) => left.localeCompare(right, state.language === 'ru' ? 'ru' : 'en'));
   }
 
-  function populateVehicleSelect(select, values, selected, placeholder) {
+  function populateVehicleSelect(select, values, selected, placeholder, formatLabel = value => value) {
     select.replaceChildren();
     const empty = document.createElement('option');
     empty.value = '';
@@ -1129,7 +1143,7 @@
     values.forEach(value => {
       const option = document.createElement('option');
       option.value = value;
-      option.textContent = value;
+      option.textContent = formatLabel(value);
       select.append(option);
     });
     select.value = selected || '';
@@ -1147,7 +1161,8 @@
       byId('vehicle-status'),
       uniqueVehicleValues('status', [...vehicleStatuses, ...(vehicle?.status ? [vehicle.status] : [])]),
       vehicle?.status || '',
-      t('selectStatus')
+      t('selectStatus'),
+      value => state.language === 'en' ? vehicleStatusCopy[value] || value : value
     );
     populateLiveryChoices(vehicle?.livery || '', true);
   }

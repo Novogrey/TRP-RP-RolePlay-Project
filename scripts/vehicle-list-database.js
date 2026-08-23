@@ -12,6 +12,7 @@
     'Не эксплуатируется': 'Not in service',
     'Выведен из эксплуатации / ожидание исключения': 'Withdrawn from service / awaiting removal',
     'Капитально-восстановительный ремонт': 'Capital restoration repair',
+    'Аварийно-восстановительный ремонт': 'Emergency restoration repair',
     'Загружается': 'Loading',
     'Модернизация': 'Modernization',
     'Списан': 'Decommissioned',
@@ -132,7 +133,7 @@
       .map(value => String(value || '').trim().toLocaleLowerCase('ru-RU'))
       .filter(Boolean);
     const serviceAssignment = assignments.some(value => /^(?:служебный|service(?: vehicle)?)$/i.test(value));
-    return ['эксплуатируется', 'in service', 'in operation', 'operational'].includes(status)
+    return status === 'эксплуатируется'
       && assignedDriverCount(vehicle?.drivers) < 3
       && !serviceAssignment;
   }
